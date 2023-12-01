@@ -33,7 +33,7 @@ router.post('/', async function(request, response) {
     const createdUser = await TwitterUserAccessor.insertTwitter(newUser)
 
     response.json("Successfully created user" + createdUser);
-    return res.json(createdUser);
+    return response.json(createdUser);
 })
 
   
