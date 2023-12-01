@@ -4,32 +4,33 @@ const router = express.Router();
 const TwitterUserAccessor = require('./db/twitter.model');
 
 
-const twitterUserDb = [
-    {username: "Dave98", password: 100,name: 'dave'},
-    {username: "John", password: 100,name: 'john'},
-    {username: "Steve", password: 100,name: 'steve'},
-]
+// const twitterUserDb = [
+//     {username: "Dave98", password: 100,name: 'dave'},
+//     {username: "John", password: 100,name: 'john'},
+//     {username: "Steve", password: 100,name: 'steve'},
+// ]
 
 router.post('/', async function(request, response) {
     const body = request.body;
     const username = body.username;
-    const name = body.name;
+    const password = body.password;
     console.log(body);
     console.log(username+"username");
-    if(name=="" || username=="") {
+    console.log(password+"password");
+    if(password=="" || username=="") {
         response.status(400);
         return response.send("Missing user name or owner")
     }
 
     const newUser = {
         username: request.body.username,
-        name: request.body.name,
+        password: request.body.password,
     }
-    twitterUserDb.push({
-        username:username,
-        name:name,
+    // twitterUserDb.push({
+    //     username:username,
+    //     password:password,
 
-    })
+    // })
     const createdUser = await TwitterUserAccessor.insertTwitter(newUser)
 
     response.json("Successfully created user" + createdUser);
@@ -44,19 +45,12 @@ router.post('/', async function(request, response) {
   
 
 router.get('/all', async function(req, response) {
-
-    // const ownerQuery = req.query.owner;
- 
-    
-
-    // if(ownerQuery) {
-    //     const foundPokemon = await TwitterUserAccessor.findPokemonByOwner(ownerQuery);
-    //     return response.json(foundPokemon);
-    // }
-
+    const body = response.body;
+    console.log(body);
    const allUsers = await TwitterUserAccessor.getAllTwitterUsers();
+   console.log(allUsers+"all users in user");
    return  response.json(allUsers);
- 
+
 })
 
 

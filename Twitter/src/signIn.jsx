@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import './styles.css'
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [pokemonListState, setPokemonListState] = useState([]);
 
   async function getAllTwitterUsers() {
+    try{
     const response = await axios.get('http://localhost:3500/api/twitter/all');
-    setPokemonListState(response.data);
+    console.log(response.data);
+    setPokemonListState(response.data);}
+    catch(error)
+    {
+      console.log(error);
+    }
   }
   useEffect(() => {
-    // console.log("I am the first line");
-    // axios.get('http://localhost:3500/api/twitter/all')
-    //   .then(function (response) {
-    //     console.log("I am the second line");
-    //     const data = response.data;
-    //     setPokemonListState(data);
-    //   })
-    //   .catch(error => console.error("Error fetching data:", error));
-    getAllTwitterUsers();
+ 
+     getAllTwitterUsers();
   }, []);
 
   const usernameInput = event => {
@@ -42,11 +41,10 @@ async function insertUser() {
   };
 
   try {
-    console.log(newUser);
     const response = await axios.post('http://localhost:3500/api/twitter', newUser);
     console.log(response.data); // Check the response from the server
    
-    await getAllTwitterUsers();
+   // await getAllTwitterUsers();
     setPassword('');
     setUsername('');
   } catch (error) {
@@ -66,7 +64,6 @@ async function insertUser() {
   async function getallusers() {
     await axios.get('http://localhost:3500/api/twitter/all');
     await getAllTwitterUsers();
-   
   }
 
   function getuser() {
@@ -75,18 +72,19 @@ async function insertUser() {
 
   return (
     <>
-      <div className='main-div'>
+    <div className='main-div'>
         <h1>Twitter</h1>
-        <div>
+        <div className="signIndetails">
           <span>Username: </span><input type='text' value={username} onInput={usernameInput}></input>
         </div>
-        <div>
+        <div className="signIndetails">
           <span>Password: </span><input type='text' value={password} onInput={passwordInput}></input>
         </div>
-        <button onClick={submit}>Create Account/Login</button>
-        <button onClick={getuser}>Get User details</button>
+        <button className="twitter-button" onClick={submit}>Create Account/Login</button>
+        <button className="twitter-button" onClick={getuser}>Get User details</button>
         
       </div>
+  
     </>
   );
 };
