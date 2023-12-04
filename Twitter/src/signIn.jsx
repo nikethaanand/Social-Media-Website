@@ -1,91 +1,111 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './styles.css'
+import './styles.css';
+import twitterLogo from './assets/twitterLogo.jpeg';
+import { Outlet, Link,useNavigate } from "react-router-dom";
+ 
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [pokemonListState, setPokemonListState] = useState([]);
+  const [usernameError, setUsernameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordValueCheck, setpasswordValueCheck] = useState([]);
+  const [validationsuccess, setvalidationsuccess] = useState(false);
+  const navigate = useNavigate();
 
-  async function getAllTwitterUsers() {
-    try{
-    const response = await axios.get('http://localhost:3500/api/twitter/all');
-    console.log(response.data);
-    setPokemonListState(response.data);}
-    catch(error)
-    {
-      console.log(error);
-    }
-  }
-  useEffect(() => {
- 
-     getAllTwitterUsers();
-  }, []);
-
-  const usernameInput = event => {
+  const usernameInput = (event) => {
     const enteredUsername = event.target.value;
     setUsername(enteredUsername);
-  }
-  
-  const passwordInput = event => {
-    const enteredPassword = event.target.value;
-    setPassword(enteredPassword);
-  }
-
-
-
-//post method
-async function insertUser() {
-  const newUser = {
-    username: username,
-    password: password,
+    setUsernameError(false); // Reset error when user types
   };
 
-  try {
-    const response = await axios.post('http://localhost:3500/api/twitter', newUser);
-    console.log(response.data); // Check the response from the server
-   
-   // await getAllTwitterUsers();
-    setPassword('');
-    setUsername('');
-  } catch (error) {
-    console.error("Error creating user:", error);
+  const passwordInput = (event) => {
+    const enteredPassword = event.target.value;
+    setPassword(enteredPassword);
+    setPasswordError(false); // Reset error when user types
+  };
+
+  const validateInputs = () => {
+    let isValid = true;
+
+    if (username.trim() === '') {
+      setUsernameError(true);
+      isValid = false;
+    }
+
+    if (password.trim() === '') {
+      setPasswordError(true);
+      isValid = false;
+    }
+
+    return isValid;
+  };
+
+  // async function insertUser() {
+  //   if (!validateInputs()) {
+  //     return; // Stop if inputs are not valid
+  //   }
+  // }
+
+  async function getPassword() {
+    try {
+      const response = await axios.get(`http://localhost:3500/api/twitter/${username}`);
+      setpasswordValueCheck(response.data);
+      console.log(response.data); // Move the console.log here to ensure it runs after the state is updated
+    } catch (error) {
+      console.error("Error getting user password:", error);
+    }
   }
-}
-
-
-
-  function submit() {
-    insertUser();
+  
+  async function signup() {
+    if (!validateInputs()) {
+      return; // Stop if inputs are not valid
+    }
+    await getPassword();
+    if(passwordValueCheck===password)
+    {
+      setvalidationsuccess(true);
+      console.log("can move to next page");
+      navigate('/HomePage');  
+    }
+    else
+    {
+      setvalidationsuccess(false);
+      console.log("not equal");
+    }
+     // Wait for the getPassword function to complete
   }
-
-
-
-  //get method
-  async function getallusers() {
-    await axios.get('http://localhost:3500/api/twitter/all');
-    await getAllTwitterUsers();
-  }
-
-  function getuser() {
-    getallusers();
-  }
+  
 
   return (
-    <>
-    <div className='main-div'>
-        <h1>Twitter</h1>
-        <div className="signIndetails">
-          <span>Username: </span><input type='text' value={username} onInput={usernameInput}></input>
+    <div className="main-container">
+      <div className="left"></div>
+      <div className="right">
+        <div className="main-div">
+          <img src={twitterLogo} alt="Logo" className="Twitter-logo" />
+          <h1>Log in to Twitter</h1>
+          <div className={`signIndetails ${usernameError ? 'error' : ''}`}>
+            <input type="text" value={username} onInput={usernameInput} placeholder="Enter username" />
+            {usernameError && <div className="error-label">Enter a value for username</div>}
+          </div>
+
+          <div className={`signIndetails ${passwordError ? 'error' : ''}`}>
+            <input type="text" value={password} onInput={passwordInput} placeholder="Enter password" />
+            {passwordError && <div className="error-label">Enter a value for password</div>}
+          </div>
+            
+          <button className="twitter-button" onClick={signup}>
+            Login
+          </button>
+          <div className="button-container">
+          <Link to="/SignUp">
+            <button className="button-link">Sign up for Twitter</button>
+            </Link>
+            <button className="button-link" > Forgot Password?</button>
+          </div>
         </div>
-        <div className="signIndetails">
-          <span>Password: </span><input type='text' value={password} onInput={passwordInput}></input>
-        </div>
-        <button className="twitter-button" onClick={submit}>Create Account/Login</button>
-        <button className="twitter-button" onClick={getuser}>Get User details</button>
-        
       </div>
-  
-    </>
+    </div>
   );
 };
 

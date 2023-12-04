@@ -5,7 +5,7 @@ const Layout = () => {
   return (
     <>
       <nav>
-        <ul className="navbar">
+        {/* <ul className="navbar">
           <li>
             <Link to="/">SignIn</Link>
           </li>
@@ -15,7 +15,7 @@ const Layout = () => {
           <li>
             <Link to="/createPost">Create Post</Link>
           </li>
-        </ul>
+        </ul> */}
       </nav>
 
       <Outlet />

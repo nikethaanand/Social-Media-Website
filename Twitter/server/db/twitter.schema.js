@@ -13,7 +13,9 @@ const Schema = mongoose.Schema;
 const TwitterSchema = new Schema({
     username: String,
     password: String,
-}, { collection: 'twitterTable' });
+    fullname: String,
+    emailId: String 
+}, { collection: 'twitterusers' });
 
 const TwitterModel = mongoose.model('Twitter', TwitterSchema);
 

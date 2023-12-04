@@ -1,33 +1,3 @@
-// const mongoose = require("mongoose")
-
-// const TwitterSchema = require('./twitter.schema').TwitterSchema
-
-// const TwitterModel = mongoose.model("Twitter", TwitterSchema);
-
-// function insertTwitter(twitter) {
-//     return TwitterModel.create(twitter);
-// }
-
-// function getAllTwitterUsers() {
-//     return TwitterModel.find().exec();
-// }
-
-// // function findPokemonByOwner(owner) {
-// //     return PokemonModel.find({owner: owner}).exec();
-// // }
-
-// // function findPokemonById(id) {
-// //     return PokemonModel.findById(id).exec();
-// // }
-
-// module.exports = {
-//     insertTwitter,
-//     getAllTwitterUsers,
-//     // getAllPokemon,
-//     // findPokemonById
-// };
-
-
 const mongoose = require('mongoose');
 
 const TwitterSchema = require('./twitter.schema').TwitterSchema;
@@ -42,7 +12,18 @@ function getAllTwitterUsers() {
     return TwitterModel.find();
 }
 
+function findpasswordByUsername(username) {
+    try{
+    return TwitterModel.findOne({ username: username }).exec();
+    }
+    catch (error) {
+        console.error('Error in findpasswordByUsername:', error);
+        throw error;
+      }
+}
+
 module.exports = {
     insertTwitter,
     getAllTwitterUsers,
+    findpasswordByUsername,
 };

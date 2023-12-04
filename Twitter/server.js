@@ -47,16 +47,59 @@ app.post('/', function(requst, response) {
 
     response.send("This is a POST request")
 })
+ 
+app.get('/api/twitter/:username', async (req, res) => {
+  try {
+    const username = req.params.username;
+    console.log('Received request for username:', username);
+    // Find the user by username in the database
+    const user = await TwitterModel.findpasswordByUsername(username);
 
 
-// app.listen(3500, function() {
-//     console.log("Starting server :)")
-// })
+    if (user) {
+      // If user is found, send the password
+      res.json({ password: user.password });
+    } else {
+      // If user is not found, return an error
+      res.status(404).json({ error: 'User not found' });
+      return;
+     }
+  } catch (error) {
+    console.error('Error retrieving password:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// app.get('/api/twitter/:username', async (req, res) => {
+//   try {
+    
+//       const username = req.params.username;
+//       console.log('Received request for username:', username);
+//       // Find the user by username in the database
+//       const user = await TwitterModel.findpasswordByUsername(username);
+  
+  
+//       if (user) {
+//         // If user is found, send the password
+//         res.json({ password: user.password });
+//       } else {
+//         // If user is not found, return an error
+//         res.status(404).json({ error: 'User not found' });
+//         return;
+//   } 
+// }
+//   catch (error) {
+//     console.error('Error in /api/twitter/:username:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+
 
 app.listen(process.env.PORT || 3500, function() {
     console.log("Starting server now...")
 })
-
 
 app.use((req, res, next) => {
     console.log(`Received request: ${req.method} ${req.url}`);

@@ -4,27 +4,26 @@ const router = express.Router();
 const TwitterUserAccessor = require('./db/twitter.model');
 
 
-// const twitterUserDb = [
-//     {username: "Dave98", password: 100,name: 'dave'},
-//     {username: "John", password: 100,name: 'john'},
-//     {username: "Steve", password: 100,name: 'steve'},
-// ]
 
 router.post('/', async function(request, response) {
     const body = request.body;
     const username = body.username;
     const password = body.password;
+    const emailId=body.emailId;
+    const fullname=body.fullname;
     console.log(body);
     console.log(username+"username");
     console.log(password+"password");
-    if(password=="" || username=="") {
+    if(password=="" || username=="" || emailId=="" || fullname=="" ) {
         response.status(400);
-        return response.send("Missing user name or owner")
+        return response.send("Missing details")
     }
 
     const newUser = {
         username: request.body.username,
         password: request.body.password,
+        emailId:  request.body.emailId,
+        fullname: request.body.fullname
     }
     // twitterUserDb.push({
     //     username:username,
@@ -52,6 +51,37 @@ router.get('/all', async function(req, response) {
    return  response.json(allUsers);
 
 })
+
+ console.log("hi");
+ router.get('/:username', async function(request, response) {
+    try {
+        const username = request.params.username;
+        const allUsersPromise = TwitterUserAccessor.findpasswordByUsername(username);
+        
+        // Wait for the promise to resolve
+        const allUsers = await allUsersPromise;
+        
+        let usernameResponse = null;
+
+        console.log(username + "username");
+        console.log(allUsers.username + "all users");
+
+       
+            if (allUsers.username === username) {
+                return response.json(allUsers.password);
+            }
+        
+
+        else {
+            response.status(404);
+            return response.send("Could not find user with User name " + username);
+        }
+    } catch (error) {
+        console.error('Error retrieving user by username:', error);
+        response.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 
 
 
