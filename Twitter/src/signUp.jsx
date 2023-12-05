@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles.css';
 import twitterLogo from './assets/twitterLogo.jpeg';
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link,useNavigate } from "react-router-dom";
 
 const Signup = () => {
     const [username, setUsername] = useState('');
@@ -15,6 +15,8 @@ const Signup = () => {
     const [emailIdError, setemailIdError] = useState(false);
     const [fullnameError, setfullnameError] = useState('');
 
+    const [validation, setValidation] = useState(false);
+    const navigate = useNavigate();
     const usernameInput = (event) => {
       const enteredUsername = event.target.value;
       setUsername(enteredUsername);
@@ -76,7 +78,8 @@ const Signup = () => {
       try {
         const response = await axios.post('http://localhost:3500/api/twitter', newUser);
         console.log(response.data);
-  
+        navigate('/SignIn');
+        setValidation(true);
         setPassword('');
         setUsername('');
         setFullName('');
@@ -88,6 +91,11 @@ const Signup = () => {
   
     function submit() {
       insertUser();
+      // if(validation)
+      // {
+      //   navigate('/HomePage');
+      // }
+
     }
   
     async function getallusers() {

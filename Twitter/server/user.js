@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const TwitterUserAccessor = require('./db/twitter.model');
-
+const bcrypt = require("bcryptjs");
 
 
 router.post('/', async function(request, response) {
@@ -18,29 +18,28 @@ router.post('/', async function(request, response) {
         response.status(400);
         return response.send("Missing details")
     }
-
+    try{
+    const hashedPassword = await bcrypt.hash(password, 10);
     const newUser = {
         username: request.body.username,
-        password: request.body.password,
+        password: hashedPassword,
         emailId:  request.body.emailId,
         fullname: request.body.fullname
     }
-    // twitterUserDb.push({
-    //     username:username,
-    //     password:password,
-
-    // })
+  
     const createdUser = await TwitterUserAccessor.insertTwitter(newUser)
 
     response.json("Successfully created user" + createdUser);
-    return response.json(createdUser);
+        }
+        catch(error)
+        {
+        console.error('Error creating user:', error);
+        response.status(500).json({ error: 'Internal Server Error' });
+        }
 })
-
+ 
   
-   
-// router.get('/', function(req, res) {
-//     res.json(twitterUserDb);
-// });
+
   
 
 router.get('/all', async function(req, response) {
@@ -53,12 +52,15 @@ router.get('/all', async function(req, response) {
 })
 
  console.log("hi");
+ 
+
+
+
  router.get('/:username', async function(request, response) {
     try {
         const username = request.params.username;
         const allUsersPromise = TwitterUserAccessor.findpasswordByUsername(username);
         
-        // Wait for the promise to resolve
         const allUsers = await allUsersPromise;
         
         let usernameResponse = null;
@@ -73,18 +75,34 @@ router.get('/all', async function(req, response) {
         
 
         else {
-            response.status(404);
-            return response.send("Could not find user with User name " + username);
+             return response.json('please enter a valid username');
         }
     } catch (error) {
-        console.error('Error retrieving user by username:', error);
-        response.status(500).json({ error: 'Internal Server Error' });
+        return response.json('please enter a valid username');
+       
     }
 });
 
 
 
-
+router.post('/login', async (request, response) => {
+    try {
+      const { username, password, hashedPassword } = request.body;
+       console.log(password);
+       console.log(hashedPassword); 
+      const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
+  
+      if (isPasswordMatch) {
+        response.json({ isValidPassword: true });
+      } else {
+        response.json({ isValidPassword: false });
+      }
+    } catch (error) {
+      console.error('Error during login:', error);
+      response.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
+  
 
 module.exports = router;
 

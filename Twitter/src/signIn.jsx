@@ -3,26 +3,29 @@ import axios from 'axios';
 import './styles.css';
 import twitterLogo from './assets/twitterLogo.jpeg';
 import { Outlet, Link,useNavigate } from "react-router-dom";
- 
+
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
-  const [passwordValueCheck, setpasswordValueCheck] = useState([]);
   const [validationsuccess, setvalidationsuccess] = useState(false);
+
   const navigate = useNavigate();
 
   const usernameInput = (event) => {
     const enteredUsername = event.target.value;
     setUsername(enteredUsername);
-    setUsernameError(false); // Reset error when user types
+    setUsernameError(false); 
   };
+
+
+
 
   const passwordInput = (event) => {
     const enteredPassword = event.target.value;
     setPassword(enteredPassword);
-    setPasswordError(false); // Reset error when user types
+    setPasswordError(false); 
   };
 
   const validateInputs = () => {
@@ -41,39 +44,53 @@ const SignIn = () => {
     return isValid;
   };
 
-  // async function insertUser() {
-  //   if (!validateInputs()) {
-  //     return; // Stop if inputs are not valid
-  //   }
-  // }
 
+ 
   async function getPassword() {
     try {
       const response = await axios.get(`http://localhost:3500/api/twitter/${username}`);
-      setpasswordValueCheck(response.data);
-      console.log(response.data); // Move the console.log here to ensure it runs after the state is updated
-    } catch (error) {
-      console.error("Error getting user password:", error);
+
+      const checkdata=response.data;
+      if(checkdata==='please enter a valid username'){
+            console.log('enter a valid username')
+        }
+      else
+      {
+          const isValidPassword = await axios.post('http://localhost:3500/api/twitter/login', {
+            username,
+            password,
+            hashedPassword: checkdata,
+          });
+        
+          const checkReturn=isValidPassword.data.isValidPassword;
+
+          if (checkReturn === true) {
+            console.log('Password matches');
+            navigate('/HomePage');
+            setvalidationsuccess(true);
+          } else {
+            setvalidationsuccess(false);
+            console.log('Enter a valid password');
+          }
     }
+    } catch (error) {
+      console.error('Error getting user password:', error);
+    
   }
-  
+  }
   async function signup() {
     if (!validateInputs()) {
-      return; // Stop if inputs are not valid
+      return; 
     }
     await getPassword();
-    if(passwordValueCheck===password)
-    {
-      setvalidationsuccess(true);
-      console.log("can move to next page");
-      navigate('/HomePage');  
-    }
-    else
-    {
-      setvalidationsuccess(false);
-      console.log("not equal");
-    }
-     // Wait for the getPassword function to complete
+  
+    // if (validationsuccess) {
+    //   console.log('can move to next page');
+    //   navigate('/HomePage');
+    // } else 
+    // {
+    //   console.log('User not found or invalid password');
+    // }
   }
   
 
