@@ -4,7 +4,8 @@ const router = express.Router();
 const TwitterUserAccessor = require('./db/twitter.model');
 const bcrypt = require("bcryptjs");
 
-
+//Post api for user signing up(Sign up page)
+//Cookie is also created with the username since it direclty has to move to the homepage
 router.post('/', async function(request, response) {
     const body = request.body;
     const username = body.username;
@@ -26,10 +27,12 @@ router.post('/', async function(request, response) {
         emailId:  request.body.emailId,
         fullname: request.body.fullname
     }
-  
+
     const createdUser = await TwitterUserAccessor.insertTwitter(newUser)
 
+    response.cookie('username', createdUser.username);
     response.json("Successfully created user" + createdUser);
+
         }
         catch(error)
         {
@@ -41,21 +44,19 @@ router.post('/', async function(request, response) {
   
 
   
+// 
+// router.get('/all', async function(req, response) {
+//     const body = response.body;
+//     console.log(body);
+//    const allUsers = await TwitterUserAccessor.getAllTwitterUsers();
+//    console.log(allUsers+"all users in user");
+//    return  response.json(allUsers);
 
-router.get('/all', async function(req, response) {
-    const body = response.body;
-    console.log(body);
-   const allUsers = await TwitterUserAccessor.getAllTwitterUsers();
-   console.log(allUsers+"all users in user");
-   return  response.json(allUsers);
+// })
 
-})
-
- console.log("hi");
  
-
-
-
+//In the login page once the user enters the username and password, username is validated with the db
+//It returns the password encrypted
  router.get('/:username', async function(request, response) {
     try {
         const username = request.params.username;
@@ -84,25 +85,44 @@ router.get('/all', async function(req, response) {
 });
 
 
-
 router.post('/login', async (request, response) => {
-    try {
-      const { username, password, hashedPassword } = request.body;
-       console.log(password);
-       console.log(hashedPassword); 
-      const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
-  
-      if (isPasswordMatch) {
-        response.json({ isValidPassword: true });
-      } else {
-        response.json({ isValidPassword: false });
-      }
-    } catch (error) {
-      console.error('Error during login:', error);
-      response.status(500).json({ error: 'Internal Server Error' });
+  try {
+    const { username, password, hashedPassword } = request.body;
+    console.log(password);
+    console.log(hashedPassword); 
+    const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
+
+    if (isPasswordMatch) {
+      response.cookie('username', username);
+      return response.json({ loggedIn: true });
+    } else {
+      return response.json({ loggedIn: false });
     }
-  });
+  } catch (error) {
+    console.error('Error during login:', error);
+    return response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
   
+
+  router.post('/logout', async function(request, response) {
+   // response.clearCookie('username', { sameSite: 'None', secure: true });
+
+   response.clearCookie('username'); // this doesn't delete the cookie, but expires it immediately
+    response.send();
+});
+
+
+  router.get('/isLoggedIn', function(request, response) {
+    const username = request.cookies.username;
+    console.log(username +"usernmee in loggedin");
+    response.send({
+        isLoggedIn: !!username,
+        username: username
+    });
+  })
 
 module.exports = router;
 

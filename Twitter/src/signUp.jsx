@@ -76,9 +76,10 @@ const Signup = () => {
       };
   
       try {
+        
         const response = await axios.post('http://localhost:3500/api/twitter', newUser);
         console.log(response.data);
-        navigate('/SignIn');
+        navigate('/HomePage');
         setValidation(true);
         setPassword('');
         setUsername('');

@@ -1,10 +1,18 @@
-import React from 'react'
-import './index.css'
+import React from 'react';
+import { AppBar, Toolbar, Typography, Button } from '@mui/material';
+import Navbar from './Navbar';
+import Topbar from './topBar';
+
 const HomePage = () => {
-    return (
-        <>
-        <h1>Homepage</h1>
-        </>
-    )
-}
+
+  return (
+    <>
+      <Navbar />
+      <Topbar/>
+      <h1> welcome</h1>
+      
+    </>
+  );
+};
+
 export default HomePage;

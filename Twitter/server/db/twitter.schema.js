@@ -17,6 +17,7 @@ const TwitterSchema = new Schema({
     emailId: String 
 }, { collection: 'twitterusers' });
 
+
 const TwitterModel = mongoose.model('Twitter', TwitterSchema);
 
 module.exports = TwitterModel;

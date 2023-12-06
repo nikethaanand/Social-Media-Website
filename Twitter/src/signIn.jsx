@@ -56,16 +56,17 @@ const SignIn = () => {
         }
       else
       {
-          const isValidPassword = await axios.post('http://localhost:3500/api/twitter/login', {
+          const loggedIn = await axios.post('http://localhost:3500/api/twitter/login', {
             username,
             password,
             hashedPassword: checkdata,
           });
         
-          const checkReturn=isValidPassword.data.isValidPassword;
+          const checkReturn=loggedIn.data.loggedIn;
 
           if (checkReturn === true) {
             console.log('Password matches');
+            // const response = await axios.get('/api/twitter/isLoggedIn')
             navigate('/HomePage');
             setvalidationsuccess(true);
           } else {
