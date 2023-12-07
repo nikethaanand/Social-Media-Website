@@ -103,3 +103,7 @@ body {
     flex: 2;
     position: relative; /* Make sure it's relative to position absolute children */
   }
+
+  .createboxstyle{
+    margin-left: 25%;
+  }
