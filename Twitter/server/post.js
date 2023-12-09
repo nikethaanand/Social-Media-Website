@@ -1,47 +1,76 @@
 const express = require('express');
 const router = express.Router();
-
+const multer = require('multer');
+const fs = require('fs');
 const TwitterPostAccessor = require('./db/userpost.model');
 
+const upload = multer({ dest: 'uploads/' });
 
+router.post('/createPostapi', upload.single('selectedImage'), async function (request, response) {
+  console.log('Request received');
+  const body = request.body;
+  const username = body.username;
+  const postContent = body.postContent;
+  const selectedImage = request.file; // Access uploaded image
 
-router.post('/createPostapi', async function(request, response) {
-    console.log('Request received');
-    const body = request.body;
-    const username = body.username;
-    const postContent = body.postContent;
-    const selectedImage=body.selectedImage;
-    console.log(body);
-    
-    console.log(username +" "+ postContent+" in post.js");
-    if(username=="" ||postContent=='' ) {
-        response.status(400);
-        return response.send("Missing username and post details")
-    }
-    console.log('going into try');
-    try{
+  console.log(body);
+
+  if (username === '' || postContent === '') {
+    response.status(400);
+    return response.send('Missing username or post content');
+  }
+
+  try {
+    // Save uploaded image file
+    const imagePath = await saveImageFile(selectedImage);
+
+    // Construct the image URL
+    const imageUrl = `/uploads/${imagePath}`;
+
     const newUser = {
-        username: request.body.username,
-        postContent: request.body.postContent,
-        selectedImage:  request.body.selectedImage,
-    }
+      username: request.body.username,
+      postContent: request.body.postContent,
+      selectedImage: imageUrl, // Store image URL
+    };
 
-    const createdPost = await TwitterPostAccessor.addPost(newUser)
+    const createdPost = await TwitterPostAccessor.addPost(newUser);
 
     response.cookie('username', createdPost.username);
-    response.json("Successfully created user" + createdPost);
+    response.json({
+      message: 'Successfully created post and uploaded image',
+      post: createdPost,
+    });
+  } catch (error) {
+    console.error('Error creating post:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
-        }
-        catch(error)
-        {
-        console.error('Error creating user:', error);
-        response.status(500).json({ error: 'Internal Server Error' });
-        }
-})
- 
-  
+async function saveImageFile(imageFile) {
+  const filename = Date.now() + '-' + imageFile.originalname;
+  const path = 'uploads/' + filename;
 
-  
+  try {
+    fs.renameSync(imageFile.path, path);
+    return filename;
+  } catch (error) {
+    console.error('Error saving image file:', error);
+    throw error;
+  }
+}
+
+// GET all user posts
+router.get('/all', async function (req, response) {
+  try {
+    const allPosts = await TwitterPostAccessor.getAllPosts();
+    response.json(allPosts);
+  } catch (error) {
+    console.error('Error fetching posts:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
 // 
 // router.get('/all', async function(req, response) {
 //     const body = response.body;

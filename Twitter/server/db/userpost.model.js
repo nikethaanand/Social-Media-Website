@@ -17,9 +17,9 @@ function addComment(comment) {
     return TwitterPostModel.create(comment);
 }
 
-// function getAllTwitterUsers() {
-//     return TwitterPostModel.find();
-// }
+function getAllPosts() {
+    return TwitterPostModel.find();
+}
 
 function findpostsByUsername(post) {
    
@@ -30,4 +30,6 @@ module.exports = {
     addPost,
     addLike,
     addComment,
+    getAllPosts,
+    
 };
