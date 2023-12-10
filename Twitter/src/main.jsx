@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import './index.css'
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import SignIn from './SignIn.jsx'
+import SignIn from './signIn'
 import HomePage from './Homepage';
 import CreatePost from './createPost';
 import Layout from './Layout';
