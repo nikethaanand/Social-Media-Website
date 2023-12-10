@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 const TwitterModel = require('./server/db/twitter.model');
 const PostModel = require('./server/db/userpost.model');
 const multer = require('multer');
+const path = require('path')
 
 const bcrypt = require("bcryptjs");
 const cookieParser = require('cookie-parser')
@@ -28,6 +29,15 @@ const MONGO_CONNECTION_STRING ='mongodb+srv://niketha:greenlake123@cluster0.pl3p
 mongoose.connect(MONGO_CONNECTION_STRING, { useNewUrlParser: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Error connecting to MongoDB:'));
+
+let frontend_dir = path.join(__dirname, 'dist')
+app.use(express.static(frontend_dir));
+app.get('*', function (req, res) {
+    console.log("received request");
+    res.sendFile(path.join(frontend_dir, "index.html"));
+});
+
+
 app.get('/api/getData', async (req, res) => {
     try {
       const data = await TwitterModel.getAllTwitterUsers();
