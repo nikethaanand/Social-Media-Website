@@ -7,7 +7,7 @@ const TwitterPostSchema = new Schema({
   username: String,
   postContent: String,
   timeCreated: { type: Date, default: Date.now },
-  selectedImage: String,
+  selectedImage: Buffer, 
   likes: [
     {
       username: String,

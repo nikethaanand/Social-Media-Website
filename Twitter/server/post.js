@@ -1,75 +1,77 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const fs = require('fs');
 const TwitterPostAccessor = require('./db/userpost.model');
 
-const upload = multer({ dest: 'uploads/' });
+const storage = multer.memoryStorage(); // Store files in memory as buffers
+const upload = multer({ storage: storage });
+
 
 router.post('/createPostapi', upload.single('selectedImage'), async function (request, response) {
-  console.log('Request received');
-  const body = request.body;
-  const username = body.username;
-  const postContent = body.postContent;
-  const selectedImage = request.file; // Access uploaded image
-
-  console.log(body);
-
-  if (username === '' || postContent === '') {
-    response.status(400);
-    return response.send('Missing username or post content');
-  }
-
-  try {
-    // Save uploaded image file
-    const imagePath = await saveImageFile(selectedImage);
-
-    // Construct the image URL
-    const imageUrl = `/uploads/${imagePath}`;
-
-    const newUser = {
-      username: request.body.username,
-      postContent: request.body.postContent,
-      selectedImage: imageUrl, // Store image URL
-    };
-
-    const createdPost = await TwitterPostAccessor.addPost(newUser);
-
-    response.cookie('username', createdPost.username);
-    response.json({
-      message: 'Successfully created post and uploaded image',
-      post: createdPost,
-    });
-  } catch (error) {
-    console.error('Error creating post:', error);
-    response.status(500).json({ error: 'Internal Server Error' });
-  }
-});
-
-async function saveImageFile(imageFile) {
-  const filename = Date.now() + '-' + imageFile.originalname;
-  const path = 'uploads/' + filename;
-
-  try {
-    fs.renameSync(imageFile.path, path);
-    return filename;
-  } catch (error) {
-    console.error('Error saving image file:', error);
-    throw error;
-  }
-}
-
+    try {
+      console.log('Request received');
+  
+      const { username, postContent } = request.body;
+      const selectedImage = request.file;
+  
+      // Validate input
+      if (!username || !postContent || !selectedImage) {
+        return response.status(400).json({ error: 'Missing username, post content, or image' });
+      }
+  
+      // Additional validation for image format and size can be added here
+  
+      console.log('Body:', request.body);
+  
+      // Store the image directly in MongoDB as binary data
+      const createdPost = await TwitterPostAccessor.addPost({
+        username,
+        postContent,
+        selectedImage: selectedImage.buffer, // Store image buffer
+      });
+  
+      // Set a secure cookie if needed
+      response.cookie('username', createdPost.username, { secure: true, httpOnly: true });
+  
+      return response.status(200).json({
+        success: true,
+        message: 'Successfully created post and uploaded image',
+        post: createdPost,
+      });
+    } catch (error) {
+      console.error('Error creating post:', error);
+      return response.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 // GET all user posts
+// router.get('/all', async function (req, response) {
+//   try {
+//     const allPosts = await TwitterPostAccessor.getAllPosts();
+//     response.json(allPosts);
+//   } catch (error) {
+//     console.error('Error fetching posts:', error);
+//     response.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
 router.get('/all', async function (req, response) {
   try {
     const allPosts = await TwitterPostAccessor.getAllPosts();
-    response.json(allPosts);
+    // Convert binary image data to Base64 in each post
+    const postsWithBase64Images = allPosts.map(post => ({
+      ...post.toObject(),
+      selectedImage: post.selectedImage.toString('base64'),
+    }));
+    response.json(postsWithBase64Images);
   } catch (error) {
     console.error('Error fetching posts:', error);
     response.status(500).json({ error: 'Internal Server Error' });
   }
 });
 
+
+
+ 
 
 // 
 // router.get('/all', async function(req, response) {
