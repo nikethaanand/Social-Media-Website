@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import axios from 'axios';
 import AllPosts from './AllPosts';
+import ImageUploadForm from './input';
 
 const CreatePost = () => {
   const [postContent, setpostContent] = useState('');
@@ -28,36 +29,69 @@ const CreatePost = () => {
     return isValid;
   };
 
-  const handleSubmit = async () => {
-    const formData = new FormData();
-    const username = 'joe';
-    formData.append('username', username);
-    formData.append('postContent', postContent);
-    formData.append('selectedImage', selectedImage);
+  const handleImageUpload = async () => {
+    if (selectedImage) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result.split(',')[1];
 
-    try {
-      const response = await axios.post('http://localhost:3500/api/posts/createPostapi', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-      // console.log(response.data);
-      formData.forEach((value, key) => {
-        formData.delete(key);
-      });
+        try {
+          // Send base64 data to the backend
+          await axios.post('http://localhost:3500/api/posts/uploadImage', { data: base64String });
+          console.log('Image uploaded successfully');
+        } catch (error) {
+          console.error('Error uploading image', error);
+        }
+      };
 
-      // Clear inputs on success
-      setpostContent('');
-      setSelectedImage(null);
-    } catch (error) {
-      console.error('Error creating post:', error);
-      // Handle the error, for example, show a user-friendly message
-      alert('Error creating post. Please try again.');
+      reader.readAsDataURL(selectedImage);
     }
   };
 
-  const handleShowPosts = () => {
-    setShowPosts(true);
+  const handleSubmit = async () => {
+    if (validateInputs()) {
+      // Upload the image first
+      await handleImageUpload();
+
+      // Now, proceed with the rest of the form data
+      const formData = new FormData();
+      const username = 'joe';
+      formData.append('username', username);
+      formData.append('postContent', postContent);
+
+      try {
+        const response = await axios.post('http://localhost:3500/api/posts/createPostapi', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+
+        // Clear inputs on success
+        setpostContent('');
+        setSelectedImage(null);
+        setShowPosts(true);
+      } catch (error) {
+        console.error('Error creating post:', error);
+        // Handle the error, for example, show a user-friendly message
+        alert('Error creating post. Please try again.');
+      }
+    }
+  };
+
+  const [fetchedImages, setFetchedImages] = useState([]);
+
+  // Function to fetch images
+  const handleGetImages = async () => {
+    try {
+      // Call the backend GET method to fetch images
+      const response = await axios.get('http://localhost:3500/api/posts/all');
+      console.log('Fetched images:', response.data);
+
+      // Store the fetched images in the state
+      setFetchedImages(response.data);
+    } catch (error) {
+      console.error('Error fetching images', error);
+    }
   };
 
   return (
@@ -73,7 +107,7 @@ const CreatePost = () => {
         alignItems: 'center',
       }}
     >
-      <h4>Username </h4>
+      {/* <h4>Username </h4>
       <TextField
         multiline
         rows={4}
@@ -83,22 +117,46 @@ const CreatePost = () => {
         value={postContent}
         onChange={handleTextChange}
         style={{ marginBottom: '10px' }}
-      />
+      /> */}
 
-      <input
+
+<ImageUploadForm/>
+<button onClick={handleGetImages} className="twitter-button" style={{ marginTop: '20px' }}>Fetch Images</button>
+
+{fetchedImages.map((post) => (
+        <div key={post._id}>
+          <h3>{post.username}</h3>
+          <p>{post.postContent}</p>
+          {post.selectedImage ? (
+            <div style={{ maxWidth: '300px', margin: 'auto' }}>
+              <img
+                src={`data:image/jpeg;base64,${post.selectedImage}`}
+                alt="Post Image"
+                style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
+                onError={(e) => {
+                  console.error('Error loading image:', e);
+                  console.log('post:', post);
+                }}
+              />
+            </div>
+          ) : null}
+        </div>
+      ))}
+
+      {/* <input
+
         type="file"
         accept="image/*"
         onChange={handleImageChange}
         style={{ margin: '10px 0', alignSelf: 'flex-start' }}
-      />
+      /> */}
 
-      <Button variant="contained" color="primary" onClick={handleSubmit}>
+      {/* <Button variant="contained" color="primary" onClick={handleSubmit}>
         Submit
-      </Button>
-      <Button variant="contained" color="primary" onClick={handleShowPosts}>
-        Show posts
-      </Button>
-      {showPosts && <AllPosts />} {/* Conditionally render AllPosts */}
+      </Button> */}
+      {/* {showPosts && <AllPosts />} */}
+
+
     </Box>
   );
 };
