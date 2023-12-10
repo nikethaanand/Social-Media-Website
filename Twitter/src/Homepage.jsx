@@ -3,7 +3,7 @@ import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Navbar from './Navbar';
 import Topbar from './topBar';
-import CreatePost from './CreatePost';
+import CreatePost from './createPost';
 
 const HomePage = () => {
   return (
