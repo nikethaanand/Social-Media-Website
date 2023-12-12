@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton,Box } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Navbar from '../junk/Navbar';
 import Topbar from '../Navbar/topBar';
-import CreatePost from './createPost';
 import axios from 'axios';
 import ImageUploadForm from './input';
-
+import './homepage.css';
 
 const HomePage = () => {
  
@@ -42,7 +41,7 @@ const HomePage = () => {
 
   let usernameMessage = <div>Loading...</div>
   if(userName) {
-    usernameMessage = <div>Logged in as {userName}</div>
+    usernameMessage = <div> {userName}</div>
   }
 
   const handleGetImages = async () => {
@@ -68,38 +67,45 @@ const HomePage = () => {
   //     console.error('Error fetching images', error);
   //   }
   // };
-
+ 
   return (
     <>
-      {/* <Navbar /> */}
-      <Topbar /><h1> Welcome {usernameMessage} !!</h1>
-      {usernameMessage}    
-
-      {/* <CreatePost style="createboxstyle" /> */}
-
-      <ImageUploadForm />
-      <button onClick={handleGetImages} className="twitter-button" style={{ marginTop: '20px' }}>
-        Refresh
-      </button>
-      {fetchedImages.length > 0 ? (
-        fetchedImages.map((post) => (
-          <div key={post._id} style={{marginLeft:"250px"}}>
-            <h3>{post.username}</h3>
-            <p>{post.postContent}</p>
-            {post.selectedImage ? (
-              <div style={{ maxWidth: '300px', margin: 'auto' }}>
-                <img
-                  src={`data:image/jpeg;base64,${post.selectedImage}`}
-                  alt="Post Image"
-                  style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-                />
+      <Topbar />
+      <div className="container">
+        <div className="side-line" />
+        <div className="content">
+          <div className="nameStyle"> Welcome </div>
+          <ImageUploadForm style="createboxstyle" />
+          {/* <button
+            onClick={handleGetImages}
+            className="twitter-button"
+            style={{ marginTop: '20px' }}
+          >
+            Refresh Posts
+          </button> */}
+          {fetchedImages.length > 0 ? (
+            fetchedImages.map((post, index) => (
+              <div key={post._id} className="postContainer">
+                <h3>{post.username}</h3>
+                <p className="postContent">{post.postContent}</p>
+                {post.selectedImage ? (
+                  <div className="imageContainer">
+                    <img
+                      src={`data:image/jpeg;base64,${post.selectedImage}`}
+                      alt="Post Image"
+                      className="postImage"
+                    />
+                  </div>
+                ) : null}
+                {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
               </div>
-            ) : null}
-          </div>
-        ))
-      ) : (
-        <p>Loading...</p>
-)}
+            ))
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+        <div className="side-line" />
+      </div>
     </>
   );
 };
