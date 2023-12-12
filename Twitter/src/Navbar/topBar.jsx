@@ -4,6 +4,8 @@ import twitterLogo from './assets/twitterLogo.jpeg';
 import './styles.css';
 import axios from 'axios'; 
 import { useNavigate } from 'react-router-dom'; 
+import Profile from '../userprofile/Profile';
+import HomePage from '../Homepage/Homepage';
 
 const Topbar = () => {
   const logOut = async () => {
@@ -14,6 +16,25 @@ const Topbar = () => {
       console.error('Error logging out:', error);
     }
   };
+
+  const profile = async () => {
+    try {
+     // await axios.post('/api/twitter/logout', {});
+      navigate('/Profile');
+    } catch (error) {
+      console.error('Error going to profile page', error);
+    }
+  };
+
+  const home = async () => {
+    try {
+     // await axios.post('/api/twitter/logout', {});
+      navigate('/HomePage');
+    } catch (error) {
+      console.error('Error going to profile page', error);
+    }
+  };
+
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
 
@@ -23,10 +44,10 @@ const Topbar = () => {
       <ListItem button>
           <img src={twitterLogo} alt="Logo" className="Twitter-logo" />
         </ListItem>
-      <ListItem button>
+      <ListItem button onClick={home}>
           <ListItemText primary="Home" />
         </ListItem>
-        <ListItem button>
+        <ListItem button onClick={profile}>
           <ListItemText primary="Profile" />
         </ListItem>
         <ListItem button onClick={logOut}>

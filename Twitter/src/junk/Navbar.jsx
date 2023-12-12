@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Drawer, List, ListItem, ListItemText, Typography } from '@mui/material';
 import { styled } from '@mui/system';
-import twitterLogo from './assets/twitterLogo.jpeg';
-import './styles.css';
+import twitterLogo from '../assets/twitterLogo.jpeg';
+import '../styles.css';
 import axios from 'axios'; // Add this line
 import { useNavigate } from 'react-router-dom'; // Assuming you are using react-router-dom
 

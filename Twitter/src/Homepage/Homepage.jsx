@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { AppBar, Toolbar, Typography, Button, IconButton } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Navbar from './Navbar';
-import Topbar from './topBar';
+import Navbar from '../junk/Navbar';
+import Topbar from '../Navbar/topBar';
 import CreatePost from './createPost';
 import axios from 'axios';
 
