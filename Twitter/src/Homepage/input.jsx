@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Button, TextField } from '@mui/material';
-import './styles.css';
+import '../styles.css';
 
 const ImageUploadForm = () => {
   const [selectedImage, setSelectedImage] = useState(null);

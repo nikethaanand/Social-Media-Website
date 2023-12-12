@@ -63,6 +63,25 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
     });
 
 
+    router.get('/user/:userName', async (req, res) => {
+      try {
+        const username = req.params.userName;
+        const allPosts = await TwitterPostAccessor.getpostsByUsername(username);
+        
+        const postsWithBase64Images = allPosts.map(post => {
+          const postObject = post.toObject();
+          if (postObject.selectedImage) {
+            postObject.selectedImage = postObject.selectedImage.toString('base64');
+          }
+          return postObject;
+        });
+    
+        res.json(postsWithBase64Images);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
     router.get('/all', async (req, res) => {
         try {
           
