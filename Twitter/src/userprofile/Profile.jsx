@@ -53,28 +53,41 @@ export default function Profile() {
     return (<>
 
     <Topbar />
-      <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
+     
 
-
-      {fetchedImages.length > 0 ? (
-        fetchedImages.map((post) => (
-          <div key={post._id} style={{marginLeft:"250px"}}>
-            <h3>{post.username}</h3>
-            <p>{post.postContent}</p>
-            {post.selectedImage ? (
-              <div style={{ maxWidth: '300px', margin: 'auto' }}>
-                <img
-                  src={`data:image/jpeg;base64,${post.selectedImage}`}
-                  alt="Post Image"
-                  style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
-                />
+      <div className="container">
+        <div className="side-line" />
+        <div className="content">
+          <div className="nameStyle"> Welcome </div>
+          <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
+          {fetchedImages.length > 0 ? (
+            fetchedImages.map((post, index) => (
+              <div key={post._id} className="postContainer">
+                <h3>{post.username}</h3>
+                <p className="postContent">{post.postContent}</p>
+                {post.selectedImage ? (
+                  <div className="imageContainer">
+                    <img
+                      src={`data:image/jpeg;base64,${post.selectedImage}`}
+                      alt="Post Image"
+                      className="postImage"
+                    />
+                  </div>
+                ) : null}
+                {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
               </div>
-            ) : null}
-          </div>
-        ))
-      ) : (
-        <p>Loading...</p>
-)}
+            ))
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+        <div className="side-line" />
+      </div>
+
+
+
+
+
     </>
         );
     }
