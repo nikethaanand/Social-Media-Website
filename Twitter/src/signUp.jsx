@@ -79,7 +79,8 @@ const Signup = () => {
         
         const response = await axios.post('http://localhost:3500/api/twitter', newUser);
         console.log(response.data);
-        navigate('/HomePage');
+        //navigate(`/HomePage/${username}`);
+         navigate('/HomePage');
         setValidation(true);
         setPassword('');
         setUsername('');
@@ -130,7 +131,7 @@ const Signup = () => {
             </div>
   
   <div className={`signIndetails ${passwordError ? 'error' : ''}`}>
-    <input type="text" value={password} onInput={passwordInput} placeholder="Enter password" />
+    <input type="password" value={password} onInput={passwordInput} placeholder="Enter password" />
     {passwordError && <div className="error-label">Enter a value for password</div>}
   </div>
   

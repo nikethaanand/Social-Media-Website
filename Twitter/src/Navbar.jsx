@@ -21,20 +21,20 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
 
-  useEffect(() => {
-    async function getUsername() {
-      try {
-        const response = await axios.get('/api/user/isLoggedIn');
-        if (response.data.username) {
-          setUsername(response.data.username);
-        }
-      } catch (error) {
-        console.error('Error fetching username:', error);
-      }
-    }
+  // useEffect(() => {
+  //   async function getUsername() {
+  //     try {
+      
+  //       if (response.data.username) {
+  //         setUsername(response.data.username);
+  //       }
+  //     } catch (error) {
+  //       console.error('Error fetching username:', error);
+  //     }
+  //   }
 
-    getUsername();
-  }, []);
+  //   getUsername();
+  // }, []);
 
   const logOut = async () => {
     try {

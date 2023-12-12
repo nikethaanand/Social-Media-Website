@@ -12,7 +12,7 @@ router.post('/', async function(request, response) {
     const password = body.password;
     const emailId=body.emailId;
     const fullname=body.fullname;
-    console.log(body);
+    //console.log(body);
     console.log(username+"username");
     console.log(password+"password");
     if(password=="" || username=="" || emailId=="" || fullname=="" ) {
@@ -91,9 +91,10 @@ router.post('/login', async (request, response) => {
     console.log(password);
     console.log(hashedPassword); 
     const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
-
+    const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
+     console.log(receivedUser);
     if (isPasswordMatch) {
-      response.cookie('username', username);
+      response.cookie('username',receivedUser.username);
       return response.json({ loggedIn: true });
     } else {
       return response.json({ loggedIn: false });
@@ -105,24 +106,19 @@ router.post('/login', async (request, response) => {
 });
 
 
-  
-
   router.post('/logout', async function(request, response) {
-   // response.clearCookie('username', { sameSite: 'None', secure: true });
-
-   response.clearCookie('username'); // this doesn't delete the cookie, but expires it immediately
+   response.clearCookie('username');
     response.send();
 });
 
-
-  router.get('/isLoggedIn', function(request, response) {
-    const username = request.cookies.username;
-    console.log(username +"usernmee in loggedin");
-    response.send({
-        isLoggedIn: !!username,
-        username: username
-    });
-  })
+router.get('/isLoggedIn',async function(request, response) {
+  const username = request.cookies.username;
+  response.send({
+      isLoggedIn: !!username,
+      username: username
+  });
+})
+  
 
 module.exports = router;
 

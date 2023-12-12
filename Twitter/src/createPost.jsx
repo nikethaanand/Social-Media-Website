@@ -85,7 +85,7 @@ const CreatePost = () => {
     try {
       // Call the backend GET method to fetch images
       const response = await axios.get('http://localhost:3500/api/posts/all');
-      console.log('Fetched images:', response.data);
+      //console.log('Fetched images:', response.data);
 
       // Store the fetched images in the state
       setFetchedImages(response.data);
@@ -107,17 +107,7 @@ const CreatePost = () => {
         alignItems: 'center',
       }}
     >
-      {/* <h4>Username </h4>
-      <TextField
-        multiline
-        rows={4}
-        fullWidth
-        placeholder="Whats Happening?"
-        variant="outlined"
-        value={postContent}
-        onChange={handleTextChange}
-        style={{ marginBottom: '10px' }}
-      /> */}
+     
 
 
 <ImageUploadForm/>
@@ -135,7 +125,7 @@ const CreatePost = () => {
                 style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }}
                 onError={(e) => {
                   console.error('Error loading image:', e);
-                  console.log('post:', post);
+                 // console.log('post:', post);
                 }}
               />
             </div>

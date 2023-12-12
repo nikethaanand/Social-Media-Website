@@ -8,6 +8,13 @@ const upload = multer({ storage: storage });
 
 router.post('/createPostapi', upload.single('selectedImage'), async (req, res) => {
     try {
+      // const username1 = request.cookies.username
+    
+      // if(!username1) {
+      //     res.status(400)
+      //     return res.send("Users need to be logged in to create a new post")
+      // }
+
       console.log('Received file:', req.file);  // Log the received file
   
       const { username, postContent } = req.body;
@@ -40,7 +47,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
     router.get('/all', async (req, res) => {
         try {
           const allPosts = await TwitterPostAccessor.getAllPosts();
-            console.log(allPosts);
+            //console.log(allPosts);
           // Convert the image to base64 for each post
           const postsWithBase64Images = allPosts.map(post => {
             const postObject = post.toObject();

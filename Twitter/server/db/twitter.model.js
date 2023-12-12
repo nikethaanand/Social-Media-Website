@@ -11,7 +11,9 @@ function insertTwitter(twitter) {
 function getAllTwitterUsers() {
     return TwitterModel.find();
 }
-
+function getUserByUsername(username) {
+    return TwitterModel.findOne({username: username}).exec();
+}
 function findpasswordByUsername(username) {
     try{
     return TwitterModel.findOne({ username: username }).exec();
@@ -26,4 +28,5 @@ module.exports = {
     insertTwitter,
     getAllTwitterUsers,
     findpasswordByUsername,
+    getUserByUsername,
 };
