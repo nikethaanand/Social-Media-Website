@@ -2,20 +2,18 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const TwitterPostAccessor = require('./db/userpost.model');
-
 const storage = multer.memoryStorage(); // Store files in memory as buffers
 const upload = multer({ storage: storage });
 
 router.post('/createPostapi', upload.single('selectedImage'), async (req, res) => {
     try {
-      // const username1 = request.cookies.username
-    
-      // if(!username1) {
-      //     res.status(400)
-      //     return res.send("Users need to be logged in to create a new post")
-      // }
-
-      console.log('Received file:', req.file);  // Log the received file
+      const usernametest = req.cookies.username
+      console.log("username from post.js"+usernametest)
+    //   if(!username) {
+    //     response.status(400)
+    //     return response.send("Users need to be logged in to create a new post")
+    // }
+  // console.log('Received file:', req.file);  // Log the received file
   
       const { username, postContent } = req.body;
       const selectedImage = req.file;
@@ -44,8 +42,30 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
     });
   
 
+    router.get('/:userName', async (req, res) => {
+      try {
+        const username = req.params.userName;
+        const allPosts = await TwitterPostAccessor.getpostsNotByUsername(username);
+        
+        const postsWithBase64Images = allPosts.map(post => {
+          const postObject = post.toObject();
+          if (postObject.selectedImage) {
+            postObject.selectedImage = postObject.selectedImage.toString('base64');
+          }
+          return postObject;
+        });
+    
+        res.json(postsWithBase64Images);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+      }
+    });
+
+
     router.get('/all', async (req, res) => {
         try {
+          
           const allPosts = await TwitterPostAccessor.getAllPosts();
             //console.log(allPosts);
           // Convert the image to base64 for each post
@@ -64,5 +84,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
         }
       });
       
+     
+
 
 module.exports = router;

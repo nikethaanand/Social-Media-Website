@@ -1,16 +1,41 @@
-import React from 'react';
-import { AppBar, Toolbar, Typography, Button, TextField } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Drawer, List, ListItem, ListItemText, Typography,AppBar, Toolbar, Button, } from '@mui/material';
+import twitterLogo from './assets/twitterLogo.jpeg';
+import './styles.css';
+import axios from 'axios'; 
+import { useNavigate } from 'react-router-dom'; 
 
 const Topbar = () => {
+  const logOut = async () => {
+    try {
+      await axios.post('/api/twitter/logout', {});
+      navigate('/SignIn');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+
   return (
     <AppBar position="static" sx={{ backgroundColor: '#1da0f2' }}>
       <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold', color: 'white' }}>
-          Your Logo
-        </Typography>
+      <ListItem button>
+          <img src={twitterLogo} alt="Logo" className="Twitter-logo" />
+        </ListItem>
+      <ListItem button>
+          <ListItemText primary="Home" />
+        </ListItem>
+        <ListItem button>
+          <ListItemText primary="Profile" />
+        </ListItem>
+        <ListItem button onClick={logOut}>
+          <ListItemText primary="Logout" />
+        </ListItem>
+       
 
         {/* Search bar */}
-        <TextField
+        {/* <TextField
           id="search"
           label="Search"
           variant="outlined"
@@ -19,7 +44,7 @@ const Topbar = () => {
           InputProps={{
             style: { color: '#1da0f2', fontWeight: 'bold' },
           }}
-        />
+        /> */}
 
         {/* Other buttons or components can be added here */}
         {/* <Button color="inherit">Login</Button> */}

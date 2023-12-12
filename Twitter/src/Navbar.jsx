@@ -38,7 +38,7 @@ const Navbar = () => {
 
   const logOut = async () => {
     try {
-      await axios.post('http://localhost:3500/api/twitter/logout', {});
+      await axios.post('/api/twitter/logout', {});
       navigate('/SignIn');
     } catch (error) {
       console.error('Error logging out:', error);

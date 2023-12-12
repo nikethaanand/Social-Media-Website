@@ -48,14 +48,14 @@ const SignIn = () => {
 
   async function getPassword() {
     try {
-      const response = await axios.get(`http://localhost:3500/api/twitter/${username}`);
+      const response = await axios.get(`/api/twitter/${username}`);
 
       const checkdata = response.data;
       if (checkdata === 'please enter a valid username') {
         console.log('enter a valid username')
       }
       else {
-        const loggedIn = await axios.post('http://localhost:3500/api/twitter/login', {
+        const loggedIn = await axios.post('/api/twitter/login', {
           username,
           password,
           hashedPassword: checkdata,

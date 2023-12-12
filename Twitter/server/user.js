@@ -13,8 +13,8 @@ router.post('/', async function(request, response) {
     const emailId=body.emailId;
     const fullname=body.fullname;
     //console.log(body);
-    console.log(username+"username");
-    console.log(password+"password");
+    // console.log(username+"username");
+    // console.log(password+"password");
     if(password=="" || username=="" || emailId=="" || fullname=="" ) {
         response.status(400);
         return response.send("Missing details")
@@ -29,8 +29,12 @@ router.post('/', async function(request, response) {
     }
 
     const createdUser = await TwitterUserAccessor.insertTwitter(newUser)
+    
+    const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
+    response.cookie('username', receivedUser.username);
+    //response.cookie('username', receivedUser.username, { path: '/', httpOnly: true, secure: true, sameSite: 'none' });
+    response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
 
-    response.cookie('username', createdUser.username);
     response.json("Successfully created user" + createdUser);
 
         }
@@ -55,46 +59,24 @@ router.post('/', async function(request, response) {
 // })
 
  
-//In the login page once the user enters the username and password, username is validated with the db
-//It returns the password encrypted
- router.get('/:username', async function(request, response) {
-    try {
-        const username = request.params.username;
-        const allUsersPromise = TwitterUserAccessor.findpasswordByUsername(username);
-        
-        const allUsers = await allUsersPromise;
-        
-        let usernameResponse = null;
 
-        console.log(username + "username");
-        console.log(allUsers.username + "all users");
-
-       
-            if (allUsers.username === username) {
-                return response.json(allUsers.password);
-            }
-        
-
-        else {
-             return response.json('please enter a valid username');
-        }
-    } catch (error) {
-        return response.json('please enter a valid username');
-       
-    }
-});
 
 
 router.post('/login', async (request, response) => {
   try {
     const { username, password, hashedPassword } = request.body;
-    console.log(password);
-    console.log(hashedPassword); 
+    // console.log(password);
+    // console.log(hashedPassword); 
     const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
-    const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
-     console.log(receivedUser);
     if (isPasswordMatch) {
-      response.cookie('username',receivedUser.username);
+      const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
+      response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
+
+      //response.cookie('username', receivedUser.username);
+      //response.cookie('username', receivedUser.username, { path: '/', httpOnly: true, secure: true, sameSite: 'none' });
+
+      // response.cookie('username',receivedUser.username);
+      // console.log(receivedUser.username+"received username");
       return response.json({ loggedIn: true });
     } else {
       return response.json({ loggedIn: false });
@@ -112,13 +94,42 @@ router.post('/login', async (request, response) => {
 });
 
 router.get('/isLoggedIn',async function(request, response) {
+
   const username = request.cookies.username;
   response.send({
+    username: username,
       isLoggedIn: !!username,
-      username: username
+    
   });
 })
-  
+  //In the login page once the user enters the username and password, username is validated with the db
+//It returns the password encrypted
+ router.get('/:username', async function(request, response) {
+  try {
+      const username = request.params.username;
+      const allUsersPromise = TwitterUserAccessor.findpasswordByUsername(username);
+      
+      const allUsers = await allUsersPromise;
+      
+      let usernameResponse = null;
+
+      // console.log(username + "username");
+      // console.log(allUsers.username + "all users");
+
+    
+          if (allUsers.username === username) {
+              return response.json(allUsers.password);
+          }
+      
+         
+      else {
+           return response.json('please enter a valid username');
+      }
+  } catch (error) {
+      return response.json('please enter a valid username');
+     
+  }
+});
 
 module.exports = router;
 

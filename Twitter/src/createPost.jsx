@@ -1,94 +1,35 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, TextField } from '@mui/material';
 import axios from 'axios';
-import AllPosts from './AllPosts';
 import ImageUploadForm from './input';
 
 const CreatePost = () => {
-  const [postContent, setpostContent] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [postContentError, setpostContentError] = useState(false);
-  const [showPosts, setShowPosts] = useState(false);
-
-  const handleTextChange = (event) => {
-    setpostContent(event.target.value);
-  };
-
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedImage(file);
-  };
-
-  const validateInputs = () => {
-    let isValid = true;
-
-    if (postContent.trim() === '') {
-      setpostContentError(true);
-      isValid = false;
-    }
-    return isValid;
-  };
-
-  const handleImageUpload = async () => {
-    if (selectedImage) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        const base64String = reader.result.split(',')[1];
-
-        try {
-          // Send base64 data to the backend
-          await axios.post('http://localhost:3500/api/posts/uploadImage', { data: base64String });
-          console.log('Image uploaded successfully');
-        } catch (error) {
-          console.error('Error uploading image', error);
-        }
-      };
-
-      reader.readAsDataURL(selectedImage);
-    }
-  };
-
-  const handleSubmit = async () => {
-    if (validateInputs()) {
-      // Upload the image first
-      await handleImageUpload();
-
-      // Now, proceed with the rest of the form data
-      const formData = new FormData();
-      const username = 'joe';
-      formData.append('username', username);
-      formData.append('postContent', postContent);
-
-      try {
-        const response = await axios.post('http://localhost:3500/api/posts/createPostapi', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-
-        // Clear inputs on success
-        setpostContent('');
-        setSelectedImage(null);
-        setShowPosts(true);
-      } catch (error) {
-        console.error('Error creating post:', error);
-        // Handle the error, for example, show a user-friendly message
-        alert('Error creating post. Please try again.');
-      }
-    }
-  };
-
   const [fetchedImages, setFetchedImages] = useState([]);
+  const [userName, setUsername] = useState('');
+  async function getUsername() {
+    const response = await axios.get('/api/twitter/isLoggedIn')
 
+    if(response.data.username) {
+      setUsername(response.data.username)
+    }
+  }
+
+  useEffect( function() {
+     getUsername();
+  }, []);
   // Function to fetch images
   const handleGetImages = async () => {
     try {
       // Call the backend GET method to fetch images
-      const response = await axios.get('http://localhost:3500/api/posts/all');
+      //const response = await axios.get(`/api/posts/${userName}`);
+     const response = await axios.get('/api/posts/all');
       //console.log('Fetched images:', response.data);
 
       // Store the fetched images in the state
+      console.log(response.data);
+      
       setFetchedImages(response.data);
+      
     } catch (error) {
       console.error('Error fetching images', error);
     }
@@ -111,7 +52,7 @@ const CreatePost = () => {
 
 
 <ImageUploadForm/>
-<button onClick={handleGetImages} className="twitter-button" style={{ marginTop: '20px' }}>Fetch Images</button>
+<button onClick={handleGetImages} className="twitter-button" style={{ marginTop: '20px' }}>Refresh</button>
 
 {fetchedImages.map((post) => (
         <div key={post._id}>
@@ -132,21 +73,6 @@ const CreatePost = () => {
           ) : null}
         </div>
       ))}
-
-      {/* <input
-
-        type="file"
-        accept="image/*"
-        onChange={handleImageChange}
-        style={{ margin: '10px 0', alignSelf: 'flex-start' }}
-      /> */}
-
-      {/* <Button variant="contained" color="primary" onClick={handleSubmit}>
-        Submit
-      </Button> */}
-      {/* {showPosts && <AllPosts />} */}
-
-
     </Box>
   );
 };

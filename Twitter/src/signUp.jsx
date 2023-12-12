@@ -77,7 +77,7 @@ const Signup = () => {
   
       try {
         
-        const response = await axios.post('http://localhost:3500/api/twitter', newUser);
+        const response = await axios.post('/api/twitter', newUser);
         console.log(response.data);
         //navigate(`/HomePage/${username}`);
          navigate('/HomePage');
@@ -101,7 +101,7 @@ const Signup = () => {
     }
   
     async function getallusers() {
-      await axios.get('http://localhost:3500/api/twitter/all');
+      await axios.get('/api/twitter/all');
       await getAllTwitterUsers();
     }
   
