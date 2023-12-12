@@ -5,6 +5,8 @@ import Navbar from '../junk/Navbar';
 import Topbar from '../Navbar/topBar';
 import CreatePost from './createPost';
 import axios from 'axios';
+import ImageUploadForm from './input';
+
 
 const HomePage = () => {
  
@@ -73,9 +75,12 @@ const HomePage = () => {
       <Topbar /><h1> Welcome {usernameMessage} !!</h1>
       {usernameMessage}    
 
-      <CreatePost style="createboxstyle" />
+      {/* <CreatePost style="createboxstyle" /> */}
 
-
+      <ImageUploadForm />
+      <button onClick={handleGetImages} className="twitter-button" style={{ marginTop: '20px' }}>
+        Refresh
+      </button>
       {fetchedImages.length > 0 ? (
         fetchedImages.map((post) => (
           <div key={post._id} style={{marginLeft:"250px"}}>
