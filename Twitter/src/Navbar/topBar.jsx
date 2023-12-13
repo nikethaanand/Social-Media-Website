@@ -8,6 +8,8 @@ import Profile from '../userprofile/Profile';
 import HomePage from '../Homepage/Homepage';
 
 const Topbar = () => {
+  const [userName, setUsername] = useState('');
+
   const logOut = async () => {
     try {
       await axios.post('/api/twitter/logout', {});
@@ -16,6 +18,10 @@ const Topbar = () => {
       console.error('Error logging out:', error);
     }
   };
+  useEffect(() => {
+    getUsernamefromCookie();
+    
+  }, []);
 
   const profile = async () => {
     try {
@@ -35,15 +41,27 @@ const Topbar = () => {
     }
   };
 
+  async function getUsernamefromCookie() {
+    try {
+      const response = await axios.get('/api/twitter/isLoggedIn');
+      if (response.data.username) {
+        setUsername(response.data.username);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
 
   return (
     <AppBar position="static" sx={{ backgroundColor: '#1da0f2' }}>
       <Toolbar>
       <ListItem button>
           <img src={twitterLogo} alt="Logo" className="Twitter-logo" />
+          <h4 style={{marginLeft:"15px"}}> Welcome  {userName}!</h4>
         </ListItem>
+      
       <ListItem button onClick={home}>
           <ListItemText primary="Home" />
         </ListItem>
@@ -52,6 +70,8 @@ const Topbar = () => {
         </ListItem>
         <ListItem button onClick={logOut}>
           <ListItemText primary="Logout" />
+         
+
         </ListItem>
        
 

@@ -5,6 +5,9 @@ import Twitterprofilephoto from '../assets/Twitterprofilephoto.png';
 import axios from 'axios';
 import './profile.css';
 import moment from 'moment';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { AppBar, Toolbar, Typography, Button, IconButton, Box, TextField } from '@mui/material';
 
 export default function Profile() {
 
@@ -12,6 +15,9 @@ export default function Profile() {
     const [fetchedImages, setFetchedImages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState(null);
+    const [editingPostId, setEditingPostId] = useState(null);
+    const [editedPostContent, setEditedPostContent] = useState('');
+
 
     async function getUsernamefromCookie() {
       try{
@@ -76,6 +82,46 @@ export default function Profile() {
         const duration = moment.duration(currentDate.diff(postDate));
         return duration.humanize();
       };
+
+      const handleEditPost = (postId) => {
+        // Find the post by postId
+        const postToEdit = fetchedImages.find((post) => post._id === postId);
+    
+        // Set the editing post state
+        setEditingPostId(postId);
+        setEditedPostContent(postToEdit.postContent);
+      };
+    
+      const handleUpdatePost = async () => {
+        try {
+          // Call the backend API to update the post
+          await axios.put(`/api/posts/update/${editingPostId}`, {
+            postContent: editedPostContent,
+          });
+    
+          // Clear the editing state
+          setEditingPostId(null);
+          setEditedPostContent('');
+    
+          // Fetch the updated posts
+          handleGetImages();
+        } catch (error) {
+          console.error('Error updating post', error);
+        }
+      };
+    
+      const handleDeletePost = async (postId) => {
+        try {
+          // Call the backend API to delete the post
+          await axios.delete(`/api/posts/delete/${postId}`);
+    
+          // Fetch the updated posts
+          handleGetImages();
+        } catch (error) {
+          console.error('Error deleting post', error);
+        }
+      };
+
     return (<>
 
     <Topbar />
@@ -102,12 +148,45 @@ export default function Profile() {
 
 
 
-          {fetchedImages.length > 0 ? (
+{fetchedImages.length > 0 ? (
             fetchedImages.map((post, index) => (
               <div key={post._id} className="postContainer">
-                <h3>{post.username}</h3>
-                <p>{calculatepostDuration(post.timeCreated)} Ago</p>
-                <p className="postContent">{post.postContent}</p>
+                <div className="postHeader">
+                  <div className="leftContent">
+
+                  <h3>{post.username}</h3>
+                 
+
+                  </div>
+                  <div className="rightContent">
+                    {post.username === userName && editingPostId !== post._id && (
+                      <>
+                        <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeletePost(post._id)} className="deleteButton">
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
+                    )}
+                    <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
+                  </div>
+                </div>
+                {editingPostId === post._id ? (
+                  <div>
+                    <TextField
+                      multiline
+                      rows={4}
+                      fullWidth
+                      variant="outlined"
+                      value={editedPostContent}
+                      onChange={(e) => setEditedPostContent(e.target.value)}
+                    />
+                    <Button onClick={handleUpdatePost}>Save Changes</Button>
+                  </div>
+                ) : (
+                  <p className="postContent">{post.postContent}</p>
+                )}
                 {post.selectedImage ? (
                   <div className="imageContainer">
                     <img

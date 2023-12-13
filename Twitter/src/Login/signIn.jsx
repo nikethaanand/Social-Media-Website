@@ -119,7 +119,6 @@ const SignIn = () => {
             <Link to="/SignUp">
               <button className="button-link">Sign up for Twitter</button>
             </Link>
-            <button className="button-link" > Forgot Password?</button>
           </div>
         </div>
       </div>

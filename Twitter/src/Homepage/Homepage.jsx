@@ -112,11 +112,11 @@ const HomePage = () => {
 
 
                   {post.username === userName ? (
-                      <Link to="/Profile">
+                      <Link to="/Profile"  style={{ textDecoration: 'none'}}>
                         <h3>{post.username}</h3>
                       </Link>
                     ) : (
-                      <Link to={`/UserProfile/${post.username}`}>
+                      <Link to={`/UserProfile/${post.username}`}  style={{ textDecoration: 'none' }}>
                         <h3>{post.username}</h3>
                       </Link>
                     )}
