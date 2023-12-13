@@ -9,7 +9,7 @@ const TwitterSchema = new Schema({
     fullname: String,
     emailId: String,
     timeCreated: { type: Date, default: Date.now },
-
+    description:String,
 }, { collection: 'twitterusers' });
 
 

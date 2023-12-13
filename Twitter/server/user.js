@@ -25,7 +25,8 @@ router.post('/', async function(request, response) {
         username: request.body.username,
         password: hashedPassword,
         emailId:  request.body.emailId,
-        fullname: request.body.fullname
+        fullname: request.body.fullname,
+        description:"please enter a description"
     }
 
     const createdUser = await TwitterUserAccessor.insertTwitter(newUser)
@@ -152,6 +153,18 @@ router.get('/user/:username', async function(request, response) {
   }
    
 });
+
+router.put('/updateBio', async function(request, response) {
+  try {
+    const { username, description } = request.body;
+    const updatedUser = await TwitterUserAccessor.updateUserDescription(username, description);
+    response.status(200).json(updatedUser);
+  } catch (error) {
+    console.error('Error updating user description:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 module.exports = router;
 

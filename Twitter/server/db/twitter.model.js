@@ -24,9 +24,24 @@ function findpasswordByUsername(username) {
       }
 }
 
+async function updateUserDescription(username, description) {
+    try {
+        const updatedUser = await TwitterModel.findOneAndUpdate(
+            { username },
+            { $set: { description } },
+            { new: true }
+        );
+        return updatedUser;
+    } catch (error) {
+        console.error('Error updating user description:', error);
+        throw error;
+    }
+}
+
 module.exports = {
     insertTwitter,
     getAllTwitterUsers,
     findpasswordByUsername,
     getUserByUsername,
+    updateUserDescription,
 };

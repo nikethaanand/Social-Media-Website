@@ -96,6 +96,9 @@ const HomePage = () => {
     }
   };
 
+  const sortedImages = fetchedImages.sort((a, b) => new Date(b.timeCreated) - new Date(a.timeCreated));
+
+
   return (
     <>
       <Topbar />
@@ -104,23 +107,20 @@ const HomePage = () => {
         <div className="content">
           <div className="nameStyle"> Welcome </div>
           <ImageUploadForm style="createboxstyle" />
-          {fetchedImages.length > 0 ? (
-            fetchedImages.map((post, index) => (
+          {sortedImages.length > 0 ? (
+            sortedImages.map((post, index) => (
               <div key={post._id} className="postContainer">
                 <div className="postHeader">
                   <div className="leftContent">
-
-
-                  {post.username === userName ? (
-                      <Link to="/Profile"  style={{ textDecoration: 'none'}}>
+                    {post.username === userName ? (
+                      <Link to="/Profile" style={{ textDecoration: 'none' }}>
                         <h3>{post.username}</h3>
                       </Link>
                     ) : (
-                      <Link to={`/UserProfile/${post.username}`}  style={{ textDecoration: 'none' }}>
+                      <Link to={`/UserProfile/${post.username}`} style={{ textDecoration: 'none' }}>
                         <h3>{post.username}</h3>
                       </Link>
                     )}
-
                   </div>
                   <div className="rightContent">
                     {post.username === userName && editingPostId !== post._id && (
@@ -160,7 +160,7 @@ const HomePage = () => {
                     />
                   </div>
                 ) : null}
-                {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
+                {index < sortedImages.length - 1 && <hr className="horizontalLine" />}
               </div>
             ))
           ) : (

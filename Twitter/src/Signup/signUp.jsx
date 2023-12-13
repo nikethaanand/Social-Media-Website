@@ -71,7 +71,8 @@ const Signup = () => {
         username: username,
         password: password,
         emailId:emailId,
-        fullname:fullname
+        fullname:fullname,
+        description:"please enter a description"
       };
   
       try {

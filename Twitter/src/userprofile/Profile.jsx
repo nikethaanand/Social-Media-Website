@@ -122,94 +122,134 @@ export default function Profile() {
         }
       };
 
-    return (<>
+      const sortedImages = fetchedImages.sort((a, b) => new Date(b.timeCreated) - new Date(a.timeCreated));
 
-    <Topbar />
-     
+      const [isEditingBio, setIsEditingBio] = useState(false);
 
-      <div className="container">
-        <div className="side-line" />
-        <div className="content">
-          <div className="nameStyle"> Welcome </div>
-          <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
+      const handleEditBio = () => {
+          setIsEditingBio(true);
+          // Set the initial bio value to the current user bio
+          setEditedPostContent(userData.description);
+      };
+  
+      const handleSaveBio = async () => {
+          try {
+              // Call the backend API to update the user bio
+              await axios.put('/api/twitter/updateBio', {
+                  username: userName,
+                  description: editedPostContent,
+              });
+  
+              // Clear the editing state
+              setIsEditingBio(false);
+              setEditedPostContent('');
+  
+              // Fetch the updated user details
+              getuserDetails();
+          } catch (error) {
+              console.error('Error updating bio', error);
+          }
+      };
 
-          <div className="userDetailsContainer">
-                    {userData ? (
-                        <div>
-                        <p>Username: {userData.username}</p>
-                        <p>Full name: {userData.fullname}</p>
-                        <p>Email Id : {userData.emailId}</p>
-                        <p>User since: {calculateJoinDuration()} ago</p>
-                        </div>
-                    ) : (
-                        <p>Loading...</p>
-                    )}
-</div>
 
-
-
-{fetchedImages.length > 0 ? (
-            fetchedImages.map((post, index) => (
-              <div key={post._id} className="postContainer">
-                <div className="postHeader">
-                  <div className="leftContent">
-
-                  <h3>{post.username}</h3>
-                 
-
+      return (
+          <>
+              <Topbar />
+              <div className="container">
+                  <div className="side-line" />
+                  <div className="content">
+                      <div className="nameStyle"> Welcome </div>
+                      <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
+  
+                      <div className="userDetailsContainer">
+                          {userData ? (
+                              <div>
+                                  <p>Username: {userData.username}</p>
+                                  <p>Full name: {userData.fullname}</p>
+                                  <p>Email Id : {userData.emailId}</p>
+                                  {isEditingBio ? (
+                                    <div>
+                                        <TextField
+                                            multiline
+                                            rows={4}
+                                            fullWidth
+                                            variant="outlined"
+                                            value={editedPostContent}
+                                            onChange={(e) => setEditedPostContent(e.target.value)}
+                                        />
+                                        <Button onClick={handleSaveBio}>Save Bio</Button>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <p>User Bio : {userData.description}</p>
+                                        {userData.description && (
+                                            <IconButton onClick={handleEditBio}>
+                                                <EditIcon />
+                                            </IconButton>
+                                        )}
+                                    </>
+                                )}
+                                  <p>User since: {calculateJoinDuration()} ago</p>
+                              </div>
+                          ) : (
+                              <p>Loading...</p>
+                          )}
+                      </div>
+  
+                      {sortedImages.length > 0 ? (
+                          sortedImages.map((post, index) => (
+                              <div key={post._id} className="postContainer">
+                                  <div className="postHeader">
+                                      <div className="leftContent">
+                                          <h3>{post.username}</h3>
+                                      </div>
+                                      <div className="rightContent">
+                                          {post.username === userName && editingPostId !== post._id && (
+                                              <>
+                                                  <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
+                                                      <EditIcon />
+                                                  </IconButton>
+                                                  <IconButton onClick={() => handleDeletePost(post._id)} className="deleteButton">
+                                                      <DeleteIcon />
+                                                  </IconButton>
+                                              </>
+                                          )}
+                                          <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
+                                      </div>
+                                  </div>
+                                  {editingPostId === post._id ? (
+                                      <div>
+                                          <TextField
+                                              multiline
+                                              rows={4}
+                                              fullWidth
+                                              variant="outlined"
+                                              value={editedPostContent}
+                                              onChange={(e) => setEditedPostContent(e.target.value)}
+                                          />
+                                          <Button onClick={handleUpdatePost}>Save Changes</Button>
+                                      </div>
+                                  ) : (
+                                      <p className="postContent">{post.postContent}</p>
+                                  )}
+                                  {post.selectedImage ? (
+                                      <div className="imageContainer">
+                                          <img
+                                              src={`data:image/jpeg;base64,${post.selectedImage}`}
+                                              alt="Post Image"
+                                              className="postImage"
+                                          />
+                                      </div>
+                                  ) : null}
+                                  {index < sortedImages.length - 1 && <hr className="horizontalLine" />}
+                              </div>
+                          ))
+                      ) : (
+                          <p>Loading...</p>
+                      )}
                   </div>
-                  <div className="rightContent">
-                    {post.username === userName && editingPostId !== post._id && (
-                      <>
-                        <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
-                          <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={() => handleDeletePost(post._id)} className="deleteButton">
-                          <DeleteIcon />
-                        </IconButton>
-                      </>
-                    )}
-                    <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
-                  </div>
-                </div>
-                {editingPostId === post._id ? (
-                  <div>
-                    <TextField
-                      multiline
-                      rows={4}
-                      fullWidth
-                      variant="outlined"
-                      value={editedPostContent}
-                      onChange={(e) => setEditedPostContent(e.target.value)}
-                    />
-                    <Button onClick={handleUpdatePost}>Save Changes</Button>
-                  </div>
-                ) : (
-                  <p className="postContent">{post.postContent}</p>
-                )}
-                {post.selectedImage ? (
-                  <div className="imageContainer">
-                    <img
-                      src={`data:image/jpeg;base64,${post.selectedImage}`}
-                      alt="Post Image"
-                      className="postImage"
-                    />
-                  </div>
-                ) : null}
-                {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
+                  <div className="side-line" />
               </div>
-            ))
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
-        <div className="side-line" />
-      </div>
-
-
-
-
-
-    </>
-        );
-    }
+          </>
+      );
+  }
