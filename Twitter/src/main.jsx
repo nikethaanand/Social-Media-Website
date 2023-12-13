@@ -6,6 +6,7 @@ import HomePage from './Homepage/Homepage';
 import Layout from './Layout';
 import Signup from './Signup/signUp';
 import Profile from './userprofile/Profile';
+import Userprofile from './userprofile/otheruserProfile';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="SignIn" element={<SignIn />} />
           <Route path="SignUp" element={<Signup />} />
           <Route path="Profile" element={<Profile />} />
+         <Route path="/UserProfile/:username" element={<Userprofile />} />
           {/* <Route path="/HomePage/:username" element={<HomePage />} /> */}
           <Route path="HomePage" element={<HomePage/>} />
           </Route>

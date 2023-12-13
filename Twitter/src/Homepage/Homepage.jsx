@@ -9,6 +9,7 @@ import moment from 'moment';
 import Allposts from './allposts';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Outlet, Link,useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [userName, setUsername] = useState('');
@@ -108,7 +109,18 @@ const HomePage = () => {
               <div key={post._id} className="postContainer">
                 <div className="postHeader">
                   <div className="leftContent">
-                    <h3>{post.username}</h3>
+
+
+                  {post.username === userName ? (
+                      <Link to="/Profile">
+                        <h3>{post.username}</h3>
+                      </Link>
+                    ) : (
+                      <Link to={`/UserProfile/${post.username}`}>
+                        <h3>{post.username}</h3>
+                      </Link>
+                    )}
+
                   </div>
                   <div className="rightContent">
                     {post.username === userName && editingPostId !== post._id && (
