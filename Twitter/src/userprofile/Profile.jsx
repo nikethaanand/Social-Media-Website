@@ -49,11 +49,7 @@ export default function Profile() {
         handleGetImages();
       }
     }, [loading,userName]);
-  
-    // let usernameMessage = <div>Loading...</div>
-    // if(userName) {
-    //   usernameMessage = <div>Logged in as {userName}</div>
-    // }
+
   
     const handleGetImages = async () => {
       try {
@@ -72,6 +68,14 @@ export default function Profile() {
         }
         return 'Unknown';
       };
+
+
+      const calculatepostDuration = (timeCreated) => {
+        const postDate = moment(timeCreated);
+        const currentDate = moment();
+        const duration = moment.duration(currentDate.diff(postDate));
+        return duration.humanize();
+      };
     return (<>
 
     <Topbar />
@@ -83,19 +87,18 @@ export default function Profile() {
           <div className="nameStyle"> Welcome </div>
           <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
 
-                            <div>
-                        {userData ? (
-                            <div>
-                            <p>Username: {userData.username}</p>
-                            <p>Full name: {userData.fullname}</p>
-                            <p>Email Id : {userData.emailId}</p>
-                            <p>User since: {calculateJoinDuration()} ago</p>
-                    
-                            </div>
-                        ) : (
-                            <p></p>
-                        )}
+          <div className="userDetailsContainer">
+                    {userData ? (
+                        <div>
+                        <p>Username: {userData.username}</p>
+                        <p>Full name: {userData.fullname}</p>
+                        <p>Email Id : {userData.emailId}</p>
+                        <p>User since: {calculateJoinDuration()} ago</p>
                         </div>
+                    ) : (
+                        <p>Loading...</p>
+                    )}
+</div>
 
 
 
@@ -103,6 +106,7 @@ export default function Profile() {
             fetchedImages.map((post, index) => (
               <div key={post._id} className="postContainer">
                 <h3>{post.username}</h3>
+                <p>{calculatepostDuration(post.timeCreated)} Ago</p>
                 <p className="postContent">{post.postContent}</p>
                 {post.selectedImage ? (
                   <div className="imageContainer">
