@@ -7,6 +7,7 @@ import ImageUploadForm from './input';
 import './homepage.css';
 import moment from 'moment';
 import Allposts from './allposts';
+import EditIcon from '@mui/icons-material/Edit';
 
 const HomePage = () => {
   const [userName, setUsername] = useState('');
@@ -38,7 +39,7 @@ const HomePage = () => {
 
   const handleGetImages = async () => {
     try {
-      const response = await axios.get(`/api/posts/${userName}`);
+      const response = await axios.get('/api/posts/all');
       setFetchedImages(response.data);
     } catch (error) {
       console.error('Error fetching images', error);
@@ -58,36 +59,48 @@ const HomePage = () => {
 
   return (
     <>
-      <Topbar />
-      <div className="container">
-        <div className="side-line" />
-        <div className="content">
-          <div className="nameStyle"> Welcome </div>
-          <ImageUploadForm style="createboxstyle" />
-          {fetchedImages.length > 0 ? (
-            fetchedImages.map((post, index) => (
-              <div key={post._id} className="postContainer">
-                <h3>{post.username}</h3>
-                <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
-                <p className="postContent">{post.postContent}</p>
-                {post.selectedImage ? (
-                  <div className="imageContainer">
-                    <img
-                      src={`data:image/jpeg;base64,${post.selectedImage}`}
-                      alt="Post Image"
-                      className="postImage"
-                    />
-                  </div>
-                ) : null}
-                {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
+       <Topbar />
+    <div className="container">
+      <div className="side-line" />
+      <div className="content">
+        <div className="nameStyle"> Welcome </div>
+        <ImageUploadForm style="createboxstyle" />
+        {fetchedImages.length > 0 ? (
+          fetchedImages.map((post, index) => (
+            <div key={post._id} className="postContainer">
+              <div className="postHeader">
+                <div className="leftContent">
+                  <h3>{post.username}</h3>
+                </div>
+                <div className="rightContent">
+                  {post.username === userName && (
+                    <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
+                      <EditIcon />
+                    </IconButton>
+                  )}
+                  <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
+                </div>
               </div>
-            ))
-          ) : (
-            <p>Loading...</p>
-          )}
-        </div>
-        <div className="side-line" />
+              <p className="postContent">{post.postContent}</p>
+              {post.selectedImage ? (
+                <div className="imageContainer">
+                  <img
+                    src={`data:image/jpeg;base64,${post.selectedImage}`}
+                    alt="Post Image"
+                    className="postImage"
+                  />
+                </div>
+              ) : null}
+              
+              {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
+            </div>
+          ))
+        ) : (
+          <p>Loading...</p>
+        )}
       </div>
+      <div className="side-line" />
+    </div>
     </>
   );
 };
