@@ -41,7 +41,9 @@ const ImageUploadForm = () => {
               'Content-Type': 'multipart/form-data',
             },
           });
-  
+          setSelectedImage(null);
+          setPostContent('');
+          document.getElementById('fileInput').value = '';
           console.log('Image uploaded successfully');
         } catch (error) {
           console.error('Error uploading image', error);
@@ -66,7 +68,7 @@ const ImageUploadForm = () => {
         onChange={handleTextChange}
         style={{ marginBottom: '10px' }}
       />
-      <input type="file" onChange={(e) => setSelectedImage(e.target.files[0])} />
+      <input type="file"  id="fileInput" onChange={(e) => setSelectedImage(e.target.files[0])} />
       <button onClick={handleImageUpload} className="twitter-button">Create Post</button>
     </div>
   );

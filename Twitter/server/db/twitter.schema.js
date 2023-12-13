@@ -7,7 +7,9 @@ const TwitterSchema = new Schema({
     username: String,
     password: String,
     fullname: String,
-    emailId: String 
+    emailId: String,
+    timeCreated: { type: Date, default: Date.now },
+
 }, { collection: 'twitterusers' });
 
 

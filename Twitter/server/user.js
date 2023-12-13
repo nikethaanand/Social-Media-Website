@@ -131,6 +131,28 @@ router.get('/isLoggedIn',async function(request, response) {
   }
 });
 
+router.get('/user/:username', async function(request, response) {
+  try {
+      const username = request.params.username;
+      const userPromise = TwitterUserAccessor.getUserByUsername(username);
+      
+      const user = await userPromise;
+
+    if (user) {
+      // User found, send the user details in the response
+      response.status(200).json(user);
+    } else {
+      // User not found, send a 404 status
+      response.status(404).json({ error: 'User not found' });
+    }
+
+  } catch (error) {
+    console.error('Error in get user details:', error);
+    response.status(500).json({ error: 'Internal Server Error' });
+  }
+   
+});
+
 module.exports = router;
 
 
