@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Box } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, IconButton, Box, TextField } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Topbar from '../Navbar/topBar';
 import axios from 'axios';
@@ -13,6 +13,8 @@ const HomePage = () => {
   const [userName, setUsername] = useState('');
   const [fetchedImages, setFetchedImages] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingPostId, setEditingPostId] = useState(null);
+  const [editedPostContent, setEditedPostContent] = useState('');
 
   async function getUsernamefromCookie() {
     try {
@@ -53,54 +55,90 @@ const HomePage = () => {
     return duration.humanize();
   };
 
-  if (!userName) {
-    return <Allposts />;
-  }
+  const handleEditPost = (postId) => {
+    // Find the post by postId
+    const postToEdit = fetchedImages.find((post) => post._id === postId);
+
+    // Set the editing post state
+    setEditingPostId(postId);
+    setEditedPostContent(postToEdit.postContent);
+  };
+
+  const handleUpdatePost = async () => {
+    try {
+      // Call the backend API to update the post
+      await axios.put(`/api/posts/update/${editingPostId}`, {
+        postContent: editedPostContent,
+      });
+
+      // Clear the editing state
+      setEditingPostId(null);
+      setEditedPostContent('');
+
+      // Fetch the updated posts
+      handleGetImages();
+    } catch (error) {
+      console.error('Error updating post', error);
+    }
+  };
 
   return (
     <>
-       <Topbar />
-    <div className="container">
-      <div className="side-line" />
-      <div className="content">
-        <div className="nameStyle"> Welcome </div>
-        <ImageUploadForm style="createboxstyle" />
-        {fetchedImages.length > 0 ? (
-          fetchedImages.map((post, index) => (
-            <div key={post._id} className="postContainer">
-              <div className="postHeader">
-                <div className="leftContent">
-                  <h3>{post.username}</h3>
+      <Topbar />
+      <div className="container">
+        <div className="side-line" />
+        <div className="content">
+          <div className="nameStyle"> Welcome </div>
+          <ImageUploadForm style="createboxstyle" />
+          {fetchedImages.length > 0 ? (
+            fetchedImages.map((post, index) => (
+              <div key={post._id} className="postContainer">
+                <div className="postHeader">
+                  <div className="leftContent">
+                    <h3>{post.username}</h3>
+                  </div>
+                  <div className="rightContent">
+                    {post.username === userName && editingPostId !== post._id && (
+                      <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
+                        <EditIcon />
+                      </IconButton>
+                    )}
+                    <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
+                  </div>
                 </div>
-                <div className="rightContent">
-                  {post.username === userName && (
-                    <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
-                      <EditIcon />
-                    </IconButton>
-                  )}
-                  <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
-                </div>
+                {editingPostId === post._id ? (
+                  <div>
+                    <TextField
+                      multiline
+                      rows={4}
+                      fullWidth
+                      variant="outlined"
+                      value={editedPostContent}
+                      onChange={(e) => setEditedPostContent(e.target.value)}
+                    />
+                    <Button onClick={handleUpdatePost}>Save Changes</Button>
+                  </div>
+                ) : (
+                  <p className="postContent">{post.postContent}</p>
+                )}
+                {post.selectedImage ? (
+                  <div className="imageContainer">
+                    <img
+                      src={`data:image/jpeg;base64,${post.selectedImage}`}
+                      alt="Post Image"
+                      className="postImage"
+                    />
+                  </div>
+                ) : null}
+                {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
               </div>
-              <p className="postContent">{post.postContent}</p>
-              {post.selectedImage ? (
-                <div className="imageContainer">
-                  <img
-                    src={`data:image/jpeg;base64,${post.selectedImage}`}
-                    alt="Post Image"
-                    className="postImage"
-                  />
-                </div>
-              ) : null}
-              
-              {index < fetchedImages.length - 1 && <hr className="horizontalLine" />}
-            </div>
-          ))
-        ) : (
-          <p>Loading...</p>
-        )}
+            ))
+          ) : (
+            <p>Loading...</p>
+          )}
+        </div>
+        <div className="side-line" />
       </div>
-      <div className="side-line" />
-    </div>
     </>
   );
 };

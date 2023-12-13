@@ -104,6 +104,31 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
       });
       
      
+      router.put('/update/:postId', async (req, res) => {
+        const { postId } = req.params;
+        const { postContent } = req.body;
+      
+        try {
+          // Find the post by ID
+          const postToUpdate = await TwitterPostAccessor.getPostById(postId);
+      
+          if (!postToUpdate) {
+            return res.status(404).json({ error: 'Post not found' });
+          }
+      
+          // Update the post content
+          postToUpdate.postContent = postContent;
+      
+          // Save the updated post
+          await postToUpdate.save();
+      
+          res.json({ message: 'Post updated successfully', updatedPost: postToUpdate });
+        } catch (error) {
+          console.error('Error updating post:', error);
+          res.status(500).json({ error: 'Internal server error' });
+        }
+      });
+      
 
 
 module.exports = router;

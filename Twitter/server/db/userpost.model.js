@@ -27,11 +27,19 @@ function getpostsNotByUsername(username) {
 }
 function getpostsByUsername(username) {
     return TwitterPostModel.find({username: username}).exec();}
+
+
+function getPostById(postId) {
+        return TwitterPostModel.findById(postId).exec();
+      }
+
 module.exports = {
     addPost,
     addLike,
     addComment,
     getAllPosts,
     getpostsByUsername,
-    getpostsNotByUsername
+    getpostsNotByUsername,
+    getPostById,
+    
 };
