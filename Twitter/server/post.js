@@ -128,6 +128,26 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
           res.status(500).json({ error: 'Internal server error' });
         }
       });
+      router.delete('/delete/:postId', async (req, res) => {
+        const { postId } = req.params;
+      
+        try {
+          // Find the post by ID
+          const postToDelete = await TwitterPostAccessor.getPostById(postId);
+      
+          if (!postToDelete) {
+            return res.status(404).json({ error: 'Post not found' });
+          }
+      
+          // Delete the post
+          await TwitterPostAccessor.deletePost(postId);
+      
+          res.json({ message: 'Post deleted successfully' });
+        } catch (error) {
+          console.error('Error deleting post:', error);
+          res.status(500).json({ error: 'Internal server error' });
+        }
+      });
       
 
 

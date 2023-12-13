@@ -32,6 +32,9 @@ function getpostsByUsername(username) {
 function getPostById(postId) {
         return TwitterPostModel.findById(postId).exec();
       }
+function deletePost(postId) {
+        return TwitterPostModel.findByIdAndDelete(postId).exec();
+      }
 
 module.exports = {
     addPost,
@@ -41,5 +44,6 @@ module.exports = {
     getpostsByUsername,
     getpostsNotByUsername,
     getPostById,
-    
+    deletePost,
+
 };

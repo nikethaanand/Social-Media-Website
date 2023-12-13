@@ -8,6 +8,7 @@ import './homepage.css';
 import moment from 'moment';
 import Allposts from './allposts';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const HomePage = () => {
   const [userName, setUsername] = useState('');
@@ -82,6 +83,18 @@ const HomePage = () => {
     }
   };
 
+  const handleDeletePost = async (postId) => {
+    try {
+      // Call the backend API to delete the post
+      await axios.delete(`/api/posts/delete/${postId}`);
+
+      // Fetch the updated posts
+      handleGetImages();
+    } catch (error) {
+      console.error('Error deleting post', error);
+    }
+  };
+
   return (
     <>
       <Topbar />
@@ -99,9 +112,14 @@ const HomePage = () => {
                   </div>
                   <div className="rightContent">
                     {post.username === userName && editingPostId !== post._id && (
-                      <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
-                        <EditIcon />
-                      </IconButton>
+                      <>
+                        <IconButton onClick={() => handleEditPost(post._id)} className="editButton">
+                          <EditIcon />
+                        </IconButton>
+                        <IconButton onClick={() => handleDeletePost(post._id)} className="deleteButton">
+                          <DeleteIcon />
+                        </IconButton>
+                      </>
                     )}
                     <p>{calculateJoinDuration(post.timeCreated)} Ago</p>
                   </div>
