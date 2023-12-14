@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Topbar from '../Navbar/topBar';
 import { useParams } from 'react-router-dom';
-import Twitterprofilephoto from '../assets/Twitterprofilephoto.png';
+import Twitterprofilephoto from '../assets/profileicon.png';
 import './profile.css';
 import moment from 'moment';
 
@@ -62,15 +62,13 @@ const Userprofile = () => {
       <div className="container">
         <div className="side-line" />
         <div className="content">
-          <div className="nameStyle"> Welcome </div>
           <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
 
           <div className="userDetailsContainer">
                     {userData ? (
                         <div>
-                        <p>Username: {userData.username}</p>
-                      
-                        <p>User since: {calculateJoinDuration()} ago</p>
+                         <p className="profile-text">Username: {userData.username}</p>
+                        <p className="profile-text">User since: {calculateJoinDuration()} ago</p>
                         </div>
                     ) : (
                         <p>Loading...</p>
