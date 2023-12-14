@@ -44,7 +44,7 @@ router.post('/', async function(request, response) {
 })
  
   
-
+//api that posts login details and returns password
 router.post('/login', async (request, response) => {
   try {
     const { username, password, hashedPassword } = request.body;
@@ -71,6 +71,7 @@ router.post('/login', async (request, response) => {
     response.send();
 });
 
+//used to check if user is logged in 
 router.get('/isLoggedIn',async function(request, response) {
 
   const username = request.cookies.username;
@@ -106,7 +107,7 @@ router.get('/isLoggedIn',async function(request, response) {
      
   }
 });
-
+//get the user details from the username
 router.get('/user/:username', async function(request, response) {
   try {
       const username = request.params.username;
@@ -126,7 +127,7 @@ router.get('/user/:username', async function(request, response) {
   }
    
 });
-
+//update the user description by default a value is set 
 router.put('/updateBio', async function(request, response) {
   try {
     const { username, description } = request.body;

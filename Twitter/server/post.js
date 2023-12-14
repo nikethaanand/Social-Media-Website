@@ -5,6 +5,7 @@ const TwitterPostAccessor = require('./db/userpost.model');
 const storage = multer.memoryStorage(); 
 const upload = multer({ storage: storage });
 
+//This is the api used to create a userpost 
 router.post('/createPostapi', upload.single('selectedImage'), async (req, res) => {
     try {
       const usernametest = req.cookies.username
@@ -36,7 +37,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
       }
     });
   
-
+//api gets all posts other than the username mentioned
     router.get('/:userName', async (req, res) => {
       try {
         const username = req.params.userName;
@@ -57,7 +58,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
       }
     });
 
-
+//api gets all posts of username
     router.get('/user/:userName', async (req, res) => {
       try {
         const username = req.params.userName;
@@ -77,6 +78,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
         res.status(500).json({ error: 'Internal Server Error' });
       }
     });
+    //api gets all posts in the db
     router.get('/all', async (req, res) => {
         try {
           
@@ -97,7 +99,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
         }
       });
       
-     
+     //update a post with the postid
       router.put('/update/:postId', async (req, res) => {
         const { postId } = req.params;
         const { postContent } = req.body;
@@ -119,6 +121,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
           res.status(500).json({ error: 'Internal server error' });
         }
       });
+      //delete a post with the postid
       router.delete('/delete/:postId', async (req, res) => {
         const { postId } = req.params;
       
