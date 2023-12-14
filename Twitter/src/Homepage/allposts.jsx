@@ -5,10 +5,11 @@ import '../styles.css';
 import axios from 'axios'; 
 import './homepage.css';
 import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 const Allposts = () => {
     const [fetchedImages, setFetchedImages] = useState([]);
-  
+    const navigate = useNavigate();
    
    
     useEffect(() => {
@@ -32,6 +33,23 @@ const Allposts = () => {
       const duration = moment.duration(currentDate.diff(postDate));
       return duration.humanize();
     };
+
+    const signUp = async () => {
+      try {
+        navigate('/SignUp');
+      } catch (error) {
+        console.error('Error going to sign in page', error);
+      }
+    };
+  
+    const signIn = async () => {
+      try {
+        navigate('/SignIn');
+      } catch (error) {
+        console.error('Error going to sign up page', error);
+      }
+    };
+
     return (
         <>
          <AppBar position="static" sx={{ backgroundColor: '#1da0f2' }}>
@@ -39,7 +57,12 @@ const Allposts = () => {
       <ListItem button>
           <img src={twitterLogo} alt="Logo" className="Twitter-logo" />
         </ListItem>
-    
+        <ListItem button onClick={signUp}>
+          <ListItemText primary="sign Up" />
+        </ListItem>
+        <ListItem button onClick={signIn}>
+          <ListItemText primary="signIn" />
+     </ListItem>
       </Toolbar>
     </AppBar>
 

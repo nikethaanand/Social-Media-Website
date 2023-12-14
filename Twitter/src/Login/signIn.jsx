@@ -10,6 +10,7 @@ const SignIn = () => {
   const [usernameError, setUsernameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [validationsuccess, setvalidationsuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const navigate = useNavigate();
 
@@ -52,6 +53,7 @@ const SignIn = () => {
 
       const checkdata = response.data;
       if (checkdata === 'please enter a valid username') {
+        setErrorMessage('enter valid username')
         console.log('enter a valid username')
       }
       else {
@@ -71,6 +73,7 @@ const SignIn = () => {
           setvalidationsuccess(true);
         } else {
           setvalidationsuccess(false);
+          setErrorMessage('Enter valid password');
           console.log('Enter a valid password');
         }
       }
@@ -115,6 +118,7 @@ const SignIn = () => {
           <button className="twitter-button" onClick={signup}>
             Login
           </button>
+          {errorMessage}
           <div className="button-container">
             <Link to="/SignUp">
               <button className="button-link">Sign up for Twitter</button>

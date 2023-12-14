@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Topbar from '../Navbar/topBar';
-import Twitterprofilephoto from '../assets/Twitterprofilephoto.png';
+import Twitterprofilephoto from '../assets/profileicon.png';
 import axios from 'axios';
 import './profile.css';
 import moment from 'moment';
@@ -158,43 +158,44 @@ export default function Profile() {
               <div className="container">
                   <div className="side-line" />
                   <div className="content">
-                      <div className="nameStyle"> Welcome </div>
-                      <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
   
-                      <div className="userDetailsContainer">
-                          {userData ? (
-                              <div>
-                                  <p>Username: {userData.username}</p>
-                                  <p>Full name: {userData.fullname}</p>
-                                  <p>Email Id : {userData.emailId}</p>
-                                  {isEditingBio ? (
-                                    <div>
-                                        <TextField
-                                            multiline
-                                            rows={4}
-                                            fullWidth
-                                            variant="outlined"
-                                            value={editedPostContent}
-                                            onChange={(e) => setEditedPostContent(e.target.value)}
-                                        />
-                                        <Button onClick={handleSaveBio}>Save Bio</Button>
-                                    </div>
-                                ) : (
-                                    <>
-                                        <p>User Bio : {userData.description}</p>
-                                        {userData.description && (
-                                            <IconButton onClick={handleEditBio}>
-                                                <EditIcon />
-                                            </IconButton>
-                                        )}
-                                    </>
-                                )}
-                                  <p>User since: {calculateJoinDuration()} ago</p>
-                              </div>
-                          ) : (
-                              <p>Loading...</p>
-                          )}
-                      </div>
+                  <div className="userDetailsContainer">
+  {userData ? (
+    <div>
+      <img src={Twitterprofilephoto} alt="Logo" className="profile-photo" />
+      <p className="profile-text">Username: {userData.username}</p>
+      <p className="profile-text">Full name: {userData.fullname}</p>
+      <p className="profile-text">Email Id : {userData.emailId}</p>
+      {isEditingBio ? (
+        <div>
+          <TextField
+            multiline
+            rows={4}
+            fullWidth
+            variant="outlined"
+            value={editedPostContent}
+            onChange={(e) => setEditedPostContent(e.target.value)}
+          />
+          <Button onClick={handleSaveBio}>Save Bio</Button>
+        </div>
+      ) : (
+        <>
+          <p className="profile-text">
+            User Bio : {userData.description}
+            {userData.description && (
+              <IconButton onClick={handleEditBio}>
+                <EditIcon />
+              </IconButton>
+            )}
+          </p>
+        </>
+      )}
+      <p className="profile-text">User since: {calculateJoinDuration()} ago</p>
+    </div>
+  ) : (
+    <p>Loading...</p>
+  )}
+</div>
   
                       {sortedImages.length > 0 ? (
                           sortedImages.map((post, index) => (

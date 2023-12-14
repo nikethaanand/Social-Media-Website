@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { AppBar, Toolbar, Typography, Button, IconButton, Box, TextField } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Topbar from '../Navbar/topBar';
 import axios from 'axios';
@@ -10,6 +9,7 @@ import Allposts from './allposts';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Outlet, Link,useNavigate } from "react-router-dom";
+import { Drawer, List, ListItem, ListItemText, Typography,AppBar, Toolbar, Button,IconButton } from '@mui/material';
 
 const HomePage = () => {
   const [userName, setUsername] = useState('');
@@ -113,11 +113,11 @@ const HomePage = () => {
                 <div className="postHeader">
                   <div className="leftContent">
                     {post.username === userName ? (
-                      <Link to="/Profile" style={{ textDecoration: 'none' }}>
+                      <Link to="/Profile" style={{ textDecoration: 'none', color:'black'}}>
                         <h3>{post.username}</h3>
                       </Link>
                     ) : (
-                      <Link to={`/UserProfile/${post.username}`} style={{ textDecoration: 'none' }}>
+                      <Link to={`/UserProfile/${post.username}`} style={{ textDecoration: 'none',color:'black' }}>
                         <h3>{post.username}</h3>
                       </Link>
                     )}

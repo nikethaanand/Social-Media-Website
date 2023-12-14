@@ -13,6 +13,7 @@ const Signup = () => {
     const [passwordError, setPasswordError] = useState(false);
     const [emailIdError, setemailIdError] = useState(false);
     const [fullnameError, setfullnameError] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [validation, setValidation] = useState(false);
     const navigate = useNavigate();
@@ -87,6 +88,8 @@ const Signup = () => {
         setFullName('');
         setEmailId('');
       } catch (error) {
+        setErrorMessage('Error creating user. Please try again.');
+
         console.error("Error creating user:", error);
       }
     }
@@ -134,10 +137,11 @@ const Signup = () => {
     <input type="password" value={password} onInput={passwordInput} placeholder="Enter password" />
     {passwordError && <div className="error-label">Enter a value for password</div>}
   </div>
-  
+             
             <button className="twitter-button" onClick={submit}>
               Register User
             </button>
+            {errorMessage}
             <div className="button-container">
             <Link to="/SignIn">
               <button className="button-link">Sign In</button>

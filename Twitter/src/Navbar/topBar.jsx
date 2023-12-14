@@ -5,7 +5,8 @@ import '../styles.css';
 import axios from 'axios'; 
 import { useNavigate } from 'react-router-dom'; 
 import Profile from '../userprofile/Profile';
-import HomePage from '../Homepage/Homepage';
+
+
 
 const Topbar = () => {
   const [userName, setUsername] = useState('');
@@ -25,7 +26,6 @@ const Topbar = () => {
 
   const profile = async () => {
     try {
-     // await axios.post('/api/twitter/logout', {});
       navigate('/Profile');
     } catch (error) {
       console.error('Error going to profile page', error);
@@ -34,7 +34,6 @@ const Topbar = () => {
 
   const home = async () => {
     try {
-     // await axios.post('/api/twitter/logout', {});
       navigate('/HomePage');
     } catch (error) {
       console.error('Error going to profile page', error);
@@ -58,19 +57,20 @@ const Topbar = () => {
     <AppBar position="static" sx={{ backgroundColor: '#1da0f2' }}>
       <Toolbar>
       <ListItem button>
-          <img src={twitterLogo} alt="Logo" className="Twitter-logo" />
-          <h4 style={{marginLeft:"15px"}}> Welcome  {userName}!</h4>
+          <img src={twitterLogo} alt="Logo" className="Twitter-logo" style={{ width: '75px', height: '50px' }}/>
+          <h4 style={{marginLeft:"15px", fontWeight: 'bold' }}> Welcome  {userName}!</h4>
         </ListItem>
       
       <ListItem button onClick={home}>
-          <ListItemText primary="Home" />
+      <ListItemText primary={<Typography style={{ fontWeight: 'bold' }}>Home</Typography>} />
         </ListItem>
         <ListItem button onClick={profile}>
-          <ListItemText primary="Profile" />
+        <ListItemText primary={<Typography style={{ fontWeight: 'bold' }}>Profile</Typography>} />
+
         </ListItem>
         <ListItem button onClick={logOut}>
-          <ListItemText primary="Logout" />
-         
+        <ListItemText primary={<Typography style={{ fontWeight: 'bold' }}>Logout</Typography>} />
+
 
         </ListItem>
        
