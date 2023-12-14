@@ -31,7 +31,7 @@ router.post('/', async function(request, response) {
     
     const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
     response.cookie('username', receivedUser.username);
-    response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
+    // response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
 
     response.json("Successfully created user" + createdUser);
 
@@ -52,7 +52,8 @@ router.post('/login', async (request, response) => {
     const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
     if (isPasswordMatch) {
       const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
-      response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
+      response.cookie('username', receivedUser.username);
+      // response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
 
     
       return response.json({ loggedIn: true });
