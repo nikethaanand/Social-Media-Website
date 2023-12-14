@@ -8,7 +8,7 @@ import moment from 'moment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { AppBar, Toolbar, Typography, Button, IconButton, Box, TextField } from '@mui/material';
-
+//Profile page of same user
 export default function Profile() {
 
     const [userName, setUsername] = useState('');
@@ -45,7 +45,7 @@ export default function Profile() {
 
     useEffect(() => {
       getUsernamefromCookie().then(() => {
-        setLoading(false); // Set loading to false after getting the username
+        setLoading(false); 
       });
     }, []);
   
@@ -84,26 +84,21 @@ export default function Profile() {
       };
 
       const handleEditPost = (postId) => {
-        // Find the post by postId
         const postToEdit = fetchedImages.find((post) => post._id === postId);
     
-        // Set the editing post state
         setEditingPostId(postId);
         setEditedPostContent(postToEdit.postContent);
       };
     
       const handleUpdatePost = async () => {
         try {
-          // Call the backend API to update the post
           await axios.put(`/api/posts/update/${editingPostId}`, {
             postContent: editedPostContent,
           });
     
-          // Clear the editing state
           setEditingPostId(null);
           setEditedPostContent('');
     
-          // Fetch the updated posts
           handleGetImages();
         } catch (error) {
           console.error('Error updating post', error);
@@ -112,10 +107,8 @@ export default function Profile() {
     
       const handleDeletePost = async (postId) => {
         try {
-          // Call the backend API to delete the post
           await axios.delete(`/api/posts/delete/${postId}`);
     
-          // Fetch the updated posts
           handleGetImages();
         } catch (error) {
           console.error('Error deleting post', error);
@@ -128,24 +121,19 @@ export default function Profile() {
 
       const handleEditBio = () => {
           setIsEditingBio(true);
-          // Set the initial bio value to the current user bio
           setEditedPostContent(userData.description);
       };
   
       const handleSaveBio = async () => {
           try {
-              // Call the backend API to update the user bio
               await axios.put('/api/twitter/updateBio', {
                   username: userName,
                   description: editedPostContent,
               });
   
-              // Clear the editing state
               setIsEditingBio(false);
               setEditedPostContent('');
-  
-              // Fetch the updated user details
-              getuserDetails();
+                getuserDetails();
           } catch (error) {
               console.error('Error updating bio', error);
           }

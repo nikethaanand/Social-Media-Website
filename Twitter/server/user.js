@@ -12,9 +12,7 @@ router.post('/', async function(request, response) {
     const password = body.password;
     const emailId=body.emailId;
     const fullname=body.fullname;
-    //console.log(body);
-    // console.log(username+"username");
-    // console.log(password+"password");
+   
     if(password=="" || username=="" || emailId=="" || fullname=="" ) {
         response.status(400);
         return response.send("Missing details")
@@ -33,7 +31,6 @@ router.post('/', async function(request, response) {
     
     const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
     response.cookie('username', receivedUser.username);
-    //response.cookie('username', receivedUser.username, { path: '/', httpOnly: true, secure: true, sameSite: 'none' });
     response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
 
     response.json("Successfully created user" + createdUser);
@@ -48,36 +45,16 @@ router.post('/', async function(request, response) {
  
   
 
-  
-// 
-// router.get('/all', async function(req, response) {
-//     const body = response.body;
-//     console.log(body);
-//    const allUsers = await TwitterUserAccessor.getAllTwitterUsers();
-//    console.log(allUsers+"all users in user");
-//    return  response.json(allUsers);
-
-// })
-
- 
-
-
-
 router.post('/login', async (request, response) => {
   try {
     const { username, password, hashedPassword } = request.body;
-    // console.log(password);
-    // console.log(hashedPassword); 
+   
     const isPasswordMatch = await bcrypt.compare(password, hashedPassword);
     if (isPasswordMatch) {
       const receivedUser = await TwitterUserAccessor.getUserByUsername(username)
       response.cookie('username', receivedUser.username, { path: '/', domain: 'localhost', httpOnly: true, secure: true, sameSite: 'None' });
 
-      //response.cookie('username', receivedUser.username);
-      //response.cookie('username', receivedUser.username, { path: '/', httpOnly: true, secure: true, sameSite: 'none' });
-
-      // response.cookie('username',receivedUser.username);
-      // console.log(receivedUser.username+"received username");
+    
       return response.json({ loggedIn: true });
     } else {
       return response.json({ loggedIn: false });
@@ -114,9 +91,7 @@ router.get('/isLoggedIn',async function(request, response) {
       
       let usernameResponse = null;
 
-      // console.log(username + "username");
-      // console.log(allUsers.username + "all users");
-
+     
     
           if (allUsers.username === username) {
               return response.json(allUsers.password);
@@ -140,10 +115,8 @@ router.get('/user/:username', async function(request, response) {
       const user = await userPromise;
 
     if (user) {
-      // User found, send the user details in the response
       response.status(200).json(user);
     } else {
-      // User not found, send a 404 status
       response.status(404).json({ error: 'User not found' });
     }
 

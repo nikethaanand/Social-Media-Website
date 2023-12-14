@@ -58,26 +58,21 @@ const HomePage = () => {
   };
 
   const handleEditPost = (postId) => {
-    // Find the post by postId
     const postToEdit = fetchedImages.find((post) => post._id === postId);
 
-    // Set the editing post state
     setEditingPostId(postId);
     setEditedPostContent(postToEdit.postContent);
   };
 
   const handleUpdatePost = async () => {
     try {
-      // Call the backend API to update the post
       await axios.put(`/api/posts/update/${editingPostId}`, {
         postContent: editedPostContent,
       });
 
-      // Clear the editing state
       setEditingPostId(null);
       setEditedPostContent('');
 
-      // Fetch the updated posts
       handleGetImages();
     } catch (error) {
       console.error('Error updating post', error);
@@ -86,10 +81,8 @@ const HomePage = () => {
 
   const handleDeletePost = async (postId) => {
     try {
-      // Call the backend API to delete the post
       await axios.delete(`/api/posts/delete/${postId}`);
 
-      // Fetch the updated posts
       handleGetImages();
     } catch (error) {
       console.error('Error deleting post', error);
@@ -105,7 +98,6 @@ const HomePage = () => {
       <div className="container">
         <div className="side-line" />
         <div className="content">
-          <div className="nameStyle"> Welcome </div>
           <ImageUploadForm style="createboxstyle" />
           {sortedImages.length > 0 ? (
             sortedImages.map((post, index) => (

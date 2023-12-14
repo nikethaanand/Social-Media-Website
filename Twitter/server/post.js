@@ -2,18 +2,13 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const TwitterPostAccessor = require('./db/userpost.model');
-const storage = multer.memoryStorage(); // Store files in memory as buffers
+const storage = multer.memoryStorage(); 
 const upload = multer({ storage: storage });
 
 router.post('/createPostapi', upload.single('selectedImage'), async (req, res) => {
     try {
       const usernametest = req.cookies.username
-      console.log("username from post.js"+usernametest)
-    //   if(!username) {
-    //     response.status(400)
-    //     return response.send("Users need to be logged in to create a new post")
-    // }
-  // console.log('Received file:', req.file);  // Log the received file
+
   
       const { username, postContent } = req.body;
       const selectedImage = req.file;
@@ -86,8 +81,7 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
         try {
           
           const allPosts = await TwitterPostAccessor.getAllPosts();
-            //console.log(allPosts);
-          // Convert the image to base64 for each post
+           
           const postsWithBase64Images = allPosts.map(post => {
             const postObject = post.toObject();
             if (postObject.selectedImage) {
@@ -109,17 +103,14 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
         const { postContent } = req.body;
       
         try {
-          // Find the post by ID
           const postToUpdate = await TwitterPostAccessor.getPostById(postId);
       
           if (!postToUpdate) {
             return res.status(404).json({ error: 'Post not found' });
           }
       
-          // Update the post content
           postToUpdate.postContent = postContent;
       
-          // Save the updated post
           await postToUpdate.save();
       
           res.json({ message: 'Post updated successfully', updatedPost: postToUpdate });
@@ -132,14 +123,12 @@ router.post('/createPostapi', upload.single('selectedImage'), async (req, res) =
         const { postId } = req.params;
       
         try {
-          // Find the post by ID
           const postToDelete = await TwitterPostAccessor.getPostById(postId);
       
           if (!postToDelete) {
             return res.status(404).json({ error: 'Post not found' });
           }
       
-          // Delete the post
           await TwitterPostAccessor.deletePost(postId);
       
           res.json({ message: 'Post deleted successfully' });

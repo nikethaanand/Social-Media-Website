@@ -7,8 +7,6 @@ function App() {
 
   return (
     <>
-      
-      
       <div className="card">
       <h1>Sign in</h1>
       <SignIn/>  

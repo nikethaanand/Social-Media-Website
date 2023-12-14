@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Box, Button, TextField } from '@mui/material';
 import '../styles.css';
 
+//Used for image upload and post creation
 const ImageUploadForm = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [postContent, setPostContent] = useState('');
@@ -32,8 +33,8 @@ const ImageUploadForm = () => {
   
         try {
           const formData = new FormData();
-          formData.append('selectedImage', selectedImage); // Use the correct name here
-          formData.append('username', userName); // Replace with the actual username
+          formData.append('selectedImage', selectedImage);
+          formData.append('username', userName); 
           formData.append('postContent', postContent);
   
           await axios.post('/api/posts/createPostapi', formData, {

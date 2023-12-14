@@ -20,23 +20,23 @@ const Signup = () => {
     const usernameInput = (event) => {
       const enteredUsername = event.target.value;
       setUsername(enteredUsername);
-      setUsernameError(false); // Reset error when user types
+      setUsernameError(false); 
     };
   
     const passwordInput = (event) => {
       const enteredPassword = event.target.value;
       setPassword(enteredPassword);
-      setPasswordError(false); // Reset error when user types
+      setPasswordError(false); 
     };
     const emailIdInput = (event) => {
         const enteredemailId = event.target.value;
         setEmailId(enteredemailId);
-        setemailIdError(false); // Reset error when user types
+        setemailIdError(false); 
       };
       const fullnameInput = (event) => {
         const enteredfullname = event.target.value;
         setFullName(enteredfullname);
-        setfullnameError(false); // Reset error when user types
+        setfullnameError(false); 
       };
   
     const validateInputs = () => {
@@ -65,7 +65,7 @@ const Signup = () => {
   
     async function insertUser() {
       if (!validateInputs()) {
-        return; // Stop if inputs are not valid
+        return; 
       }
   
       const newUser = {
@@ -80,7 +80,6 @@ const Signup = () => {
         
         const response = await axios.post('/api/twitter', newUser);
         console.log(response.data);
-        //navigate(`/HomePage/${username}`);
          navigate('/HomePage');
         setValidation(true);
         setPassword('');
@@ -96,10 +95,7 @@ const Signup = () => {
   
     function submit() {
       insertUser();
-      // if(validation)
-      // {
-      //   navigate('/HomePage');
-      // }
+  
 
     }
   

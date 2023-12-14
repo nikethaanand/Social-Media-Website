@@ -8,19 +8,7 @@ body {
     margin: 0;
   
   } 
-/* .main-div {
-    text-align: center;
-    height: 50%;
-    width: 50%;
-    padding: 20px;
-    /* max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
-  /*} */
+
    .twitter-button {
     background-color: #1da0f2;
     border: 1px solid #1da0f2;
@@ -35,7 +23,6 @@ body {
   
   .twitter-button:hover {
     background-color: #008ce2;
-    /* background: rgba(29, 161, 242, 0.1); */
     cursor: pointer;
   }  
   .main-div {
@@ -53,17 +40,16 @@ body {
   }
   
   .signIndetails input {
-    width: 200px; /* Adjust the width as needed */
+    width: 200px; 
     padding: 8px;
     margin-bottom: 10px;
     box-sizing: border-box;
-    border: 1px solid #ccc; /* Default border */
+    border: 1px solid #ccc;
   }
   
   .signIndetails.error input {
-    border-color: red; /* Border color for error state */
-    background-color: #ffeeee; /* Background color for error state */
-  }
+    border-color: red; 
+    background-color: #ffeeee; }
   
   .error-label {
     color: red;
@@ -80,9 +66,7 @@ body {
  background: none!important;
   border: none;
   padding: 0!important;
-  /*optional*/
   font-family: arial, sans-serif;
-  /*input has OS specific font-family*/
   color: #1da0f2;
   text-decoration: underline;
   cursor: pointer;
@@ -96,12 +80,12 @@ body {
   .left {
     flex: 0.4;
     background-color: #1da0f2;
-    height: 100vh; /* Set the height to cover the entire viewport */
+    height: 100vh; 
   }
   
   .right {
     flex: 2;
-    position: relative; /* Make sure it's relative to position absolute children */
+    position: relative;
   }
 
   .createboxstyle{

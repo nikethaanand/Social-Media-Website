@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import Profile from '../userprofile/Profile';
 
 
-
+//Top bar is loaded by default for all pages once logged in 
 const Topbar = () => {
   const [userName, setUsername] = useState('');
 

@@ -7,6 +7,7 @@ import './homepage.css';
 import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
+//Load all the posts
 const Allposts = () => {
     const [fetchedImages, setFetchedImages] = useState([]);
     const navigate = useNavigate();

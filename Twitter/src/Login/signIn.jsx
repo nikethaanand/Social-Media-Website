@@ -4,6 +4,7 @@ import '../styles.css';
 import twitterLogo from '../assets/twitterLogo.jpeg';
 import { Outlet, Link, useNavigate } from "react-router-dom";
 
+//Sign in page
 const SignIn = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -67,8 +68,7 @@ const SignIn = () => {
 
         if (checkReturn === true) {
           console.log('Password matches');
-          //  const response = await axios.get('/api/twitter/isLoggedIn')
-          //navigate(`/HomePage/${username}`);
+        
           navigate('/HomePage');
           setvalidationsuccess(true);
         } else {
@@ -88,13 +88,6 @@ const SignIn = () => {
     }
     await getPassword();
 
-    // if (validationsuccess) {
-    //   console.log('can move to next page');
-    //   navigate('/HomePage');
-    // } else 
-    // {
-    //   console.log('User not found or invalid password');
-    // }
   }
 
 

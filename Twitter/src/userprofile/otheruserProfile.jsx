@@ -6,6 +6,7 @@ import Twitterprofilephoto from '../assets/profileicon.png';
 import './profile.css';
 import moment from 'moment';
 
+//This is the profile page that is loaded once a username is clicked in the homepage.It will only show posts of other users
 const Userprofile = () => {
     const { username } = useParams();
     const [userData, setUserData] = useState(null);
